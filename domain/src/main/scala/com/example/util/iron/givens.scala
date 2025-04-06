@@ -8,4 +8,3 @@ inline given ironSchema[A, Description](using
   Constraint[A, Description]
 ): Schema[A :| Description] =
   Schema[A].transformOrFail(_.refineEither[Description], Right(_))
-

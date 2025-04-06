@@ -7,25 +7,9 @@ lazy val projectName = "zio-backend-example"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "zio-backend-example",
-    scalacOptions ++= Seq(
-      "-Wunused:imports"
-    ),
-    libraryDependencies ++= Seq(
-      // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
-      // Database
-      "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
-      "org.postgresql" % "postgresql" % "42.7.5",
-      "org.testcontainers" % "testcontainers" % "1.20.6",
-      "org.testcontainers" % "postgresql" % "1.20.6",
-      "com.zaxxer" % "HikariCP" % "6.3.0",
-      // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0",
-      // Logging
-      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
-    )
+    name := "zio-backend-example"
   )
+  .aggregate(core, domain)
 
 lazy val core = (project in file("core"))
   .settings(
@@ -61,7 +45,5 @@ lazy val domain = (project in file("domain"))
       "dev.zio" %% "zio-http" % "3.2.0",
       // Iron
       "io.github.iltotore" %% "iron" % "3.0.0",
-      // Logging
-      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
   )

@@ -2,7 +2,7 @@ package com.example.tables
 
 import com.augustnagro.magnum.magzio.*
 import com.example.domain.{EmployeeId, PhoneId}
-import com.example.util.given
+import com.example.util.db.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 case class EmployeePhone(

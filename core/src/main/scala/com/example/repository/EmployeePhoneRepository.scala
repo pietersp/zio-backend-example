@@ -3,7 +3,7 @@ package com.example.repository
 import com.augustnagro.magnum.magzio.*
 import com.example.domain.{EmployeeId, Phone, PhoneId}
 import com.example.tables
-import com.example.util.given
+import com.example.util.db.given
 import zio.*
 
 trait EmployeePhoneRepository {

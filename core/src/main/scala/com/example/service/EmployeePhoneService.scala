@@ -3,7 +3,11 @@ package com.example.service
 import com.example.domain.{EmployeeId, Phone, PhoneId}
 import com.example.error.AppError
 import com.example.error.AppError.*
-import com.example.repository.{EmployeePhoneRepository, EmployeeRepository, PhoneRepository}
+import com.example.repository.{
+  EmployeePhoneRepository,
+  EmployeeRepository,
+  PhoneRepository
+}
 import zio.*
 
 trait EmployeePhoneService {

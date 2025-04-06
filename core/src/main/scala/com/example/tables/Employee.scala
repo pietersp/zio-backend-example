@@ -3,7 +3,7 @@ package com.example.tables
 import com.augustnagro.magnum.magzio.*
 import com.example.domain
 import com.example.domain.{Age, DepartmentId, EmployeeId, EmployeeName}
-import com.example.util.given
+import com.example.util.db.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 final case class Employee(

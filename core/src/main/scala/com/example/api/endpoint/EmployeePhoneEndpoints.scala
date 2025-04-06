@@ -1,6 +1,12 @@
 package com.example.api.endpoint
 
-import com.example.domain.{EmployeeId, EmployeeIdDescription, Phone, PhoneId, PhoneIdDescription}
+import com.example.domain.{
+  EmployeeId,
+  EmployeeIdDescription,
+  Phone,
+  PhoneId,
+  PhoneIdDescription
+}
 import com.example.error.AppError
 import com.example.error.AppError.EmployeeNotFound
 import zio.http.*
