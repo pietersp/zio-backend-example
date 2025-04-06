@@ -32,7 +32,7 @@ lazy val core = (project in file("core"))
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
   )
-  .dependsOn(domain)
+  .dependsOn(domain, endpoints)
 
 lazy val domain = (project in file("domain"))
   .settings(
@@ -47,3 +47,19 @@ lazy val domain = (project in file("domain"))
       "io.github.iltotore" %% "iron" % "3.0.0",
     )
   )
+
+lazy val endpoints = (project in file("endpoints"))
+  .settings(
+    name := s"$projectName-core",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      // ZIO HTTP
+      "dev.zio" %% "zio-http" % "3.2.0",
+      // Iron
+      "io.github.iltotore" %% "iron" % "3.0.0",
+      // Logging
+      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
+    )
+  ).dependsOn(domain)
