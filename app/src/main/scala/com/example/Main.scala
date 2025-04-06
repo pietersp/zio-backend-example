@@ -41,7 +41,7 @@ object Main extends ZIOAppDefault with Router {
 
   val logFilterConfig =
     LogFilter.LogLevelByNameConfig(
-      LogLevel.Debug,
+      LogLevel.Info,
       "com.augustnagro.magnum" -> LogLevel.Debug
     )
 

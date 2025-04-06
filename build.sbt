@@ -7,7 +7,8 @@ lazy val projectName = "zio-backend-example"
 
 lazy val root = (project in file("."))
   .settings(
-    name := projectName
+    name := projectName,
+    addCommandAlias("run", "app/run")
   )
   .aggregate(app, core, domain, endpoints)
 
@@ -28,7 +29,8 @@ lazy val app = (project in file("app"))
       "com.zaxxer" % "HikariCP" % "6.3.0",
       // Logging
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
-    )
+    ),
+    Compile / mainClass := Some("com.example.Main")
   )
   .dependsOn(core, domain, endpoints)
 
