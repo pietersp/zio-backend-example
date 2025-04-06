@@ -1,8 +1,22 @@
-## sbt project compiled with Scala 3
+## zio-backend-example
 
-### Usage
+This is a demo for a web service using 
+- ZIO Http (Http server)
+- Iron (Refined types)
+- Magnum (Postgres access)
 
-This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
+It has been adapted from 
+[this blog post](https://www.ziverge.com/post/how-to-implement-a-rest-api-in-scala-3-with-zio-http-magnum-and-iron)
+and has been customized to split out the concepts into different projects.
 
-For more information on the sbt-dotty plugin, see the
-[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).
+The `domain` project is solely for containing the entities that the project deals with. All other projects should depend 
+on it, but it should not depend on any other project and have minimal dependencies (except `zio-http` required for 
+endpoint codecs that make use of schemas, and `iron` for refined types of our domain entities)
+
+The `endpoints` contain only the `zio-http` endpoints. These are to be implemented in `core`. The idea is that this 
+could be distributed independently so other services can make use of it to generate clients to call this service with.
+
+The `core` project is the main app that starts a `zio-http` server and contains the business logic (services), handlers
+that are responsible for implementing our `zio-http` endpoints, the implementation to access the database (this might 
+change) and the main entrypoint to start the program 
+
