@@ -11,7 +11,10 @@ trait EmployeeEndpoints {
     Endpoint(Method.POST / "employee")
       .in[Employee](Doc.p("Employee to be created"))
       .out[Int](Doc.p("ID of the created employee"))
-      .outError[DepartmentNotFound](Status.NotFound, Doc.p("The employee's department was not found"))
+      .outError[DepartmentNotFound](
+        Status.NotFound,
+        Doc.p("The employee's department was not found")
+      )
       ?? Doc.p("Create a new employee")
 
   val getEmployees =
@@ -22,14 +25,20 @@ trait EmployeeEndpoints {
   val getEmployeeById =
     Endpoint(Method.GET / "employee" / int("id"))
       .out[Employee](Doc.p("The employee with the given `id`"))
-      .outError[EmployeeNotFound](Status.NotFound, Doc.p("The employee was not found"))
+      .outError[EmployeeNotFound](
+        Status.NotFound,
+        Doc.p("The employee was not found")
+      )
       ?? Doc.p("Obtain the employee with the given `id`")
 
   val updateEmployee =
     Endpoint(Method.PUT / "employee" / int("id"))
       .in[Employee](Doc.p("Employee to be updated"))
       .out[Unit]
-      .outError[EmployeeNotFound](Status.NotFound, Doc.p("The employee was not found"))
+      .outError[EmployeeNotFound](
+        Status.NotFound,
+        Doc.p("The employee was not found")
+      )
       ?? Doc.p("Update the employee with the given `id`")
 
   val deleteEmployee =

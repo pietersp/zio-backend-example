@@ -15,7 +15,7 @@ final case class Employee(
 
 object Employee {
   val table = TableInfo[domain.Employee, Employee, Int]
-  
+
   def fromDomain(employeeId: Int, employee: domain.Employee): Employee =
     Employee(
       id = employeeId,

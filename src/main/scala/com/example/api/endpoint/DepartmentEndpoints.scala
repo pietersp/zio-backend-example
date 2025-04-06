@@ -11,7 +11,10 @@ trait DepartmentEndpoints {
     Endpoint(Method.POST / "department")
       .in[Department](Doc.p("Department to be created"))
       .out[Int](Doc.p("ID of the created department"))
-      .outError[DepartmentAlreadyExists](Status.Conflict, Doc.p("The department already exists"))
+      .outError[DepartmentAlreadyExists](
+        Status.Conflict,
+        Doc.p("The department already exists")
+      )
       ?? Doc.p("Create a new department")
 
   val getDepartments =
@@ -22,14 +25,20 @@ trait DepartmentEndpoints {
   val getDepartmentById =
     Endpoint(Method.GET / "department" / int("id"))
       .out[Department](Doc.p("Department"))
-      .outError[DepartmentNotFound](Status.NotFound, Doc.p("The department was not found"))
+      .outError[DepartmentNotFound](
+        Status.NotFound,
+        Doc.p("The department was not found")
+      )
       ?? Doc.p("Obtain the department with the given `id`")
 
   val updateDepartment =
     Endpoint(Method.PUT / "department" / int("id"))
       .in[Department](Doc.p("Department to be updated"))
       .out[Unit]
-      .outError[DepartmentNotFound](Status.NotFound, Doc.p("The department was not found"))
+      .outError[DepartmentNotFound](
+        Status.NotFound,
+        Doc.p("The department was not found")
+      )
       ?? Doc.p("Update the department with the given `id`")
 
   val deleteDepartment =

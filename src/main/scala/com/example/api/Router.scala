@@ -1,8 +1,23 @@
 package com.example.api
 
-import com.example.api.endpoint.{DepartmentEndpoints, EmployeeEndpoints, EmployeePhoneEndpoints, PhoneEndpoints}
-import com.example.api.handler.{DepartmentHandlers, EmployeeHandlers, EmployeePhoneHandlers, PhoneHandlers}
-import com.example.service.{DepartmentService, EmployeePhoneService, EmployeeService, PhoneService}
+import com.example.api.endpoint.{
+  DepartmentEndpoints,
+  EmployeeEndpoints,
+  EmployeePhoneEndpoints,
+  PhoneEndpoints
+}
+import com.example.api.handler.{
+  DepartmentHandlers,
+  EmployeeHandlers,
+  EmployeePhoneHandlers,
+  PhoneHandlers
+}
+import com.example.service.{
+  DepartmentService,
+  EmployeePhoneService,
+  EmployeeService,
+  PhoneService
+}
 import zio.http.endpoint.openapi.{OpenAPIGen, SwaggerUI}
 import zio.http.{Routes, *}
 
@@ -16,7 +31,7 @@ trait Router
     with EmployeePhoneEndpoints
     with EmployeePhoneHandlers {
 
-  private val departmentRoutes: Routes[DepartmentService, Nothing] =
+  private val departmentRoutes =
     Routes(
       createDepartment.implementHandler(handler(createDepartmentHandler)),
       getDepartments.implementHandler(handler(getDepartmentsHandler)),
@@ -25,7 +40,7 @@ trait Router
       deleteDepartment.implementHandler(handler(deleteDepartmentHandler))
     )
 
-  private val employeeRoutes: Routes[EmployeeService, Nothing] =
+  private val employeeRoutes =
     Routes(
       createEmployee.implementHandler(handler(createEmployeeHandler)),
       getEmployees.implementHandler(handler(getEmployeesHandler)),
@@ -57,7 +72,7 @@ trait Router
     Nothing
   ] =
     departmentRoutes ++ employeeRoutes ++ phoneRoutes ++ employeePhoneRoutes
-    
+
   val swaggerRoutes =
     SwaggerUI.routes(
       "docs",

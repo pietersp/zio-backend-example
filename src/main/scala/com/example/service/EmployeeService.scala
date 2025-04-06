@@ -19,7 +19,9 @@ final case class EmployeeServiceLive(
 ) extends EmployeeService {
 
   override def create(employee: Employee): IO[DepartmentNotFound, Int] =
-    departmentRepository.retrieve(employee.departmentId).someOrFail(DepartmentNotFound)
+    departmentRepository
+      .retrieve(employee.departmentId)
+      .someOrFail(DepartmentNotFound)
       *> employeeRepository.create(employee)
 
   override def retrieveAll: UIO[Vector[Employee]] =
@@ -28,7 +30,10 @@ final case class EmployeeServiceLive(
   override def retrieveById(employeeId: Int): IO[EmployeeNotFound, Employee] =
     employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
 
-  override def update(employeeId: Int, employee: Employee): IO[EmployeeNotFound, Unit] =
+  override def update(
+    employeeId: Int,
+    employee: Employee
+  ): IO[EmployeeNotFound, Unit] =
     employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
       *> employeeRepository.update(employeeId, employee)
 
@@ -37,6 +42,7 @@ final case class EmployeeServiceLive(
 }
 
 object EmployeeServiceLive {
-  val layer: URLayer[EmployeeRepository & DepartmentRepository, EmployeeServiceLive] =
-    ZLayer.fromFunction(EmployeeServiceLive(_,_))
+  val layer
+    : URLayer[EmployeeRepository & DepartmentRepository, EmployeeServiceLive] =
+    ZLayer.fromFunction(EmployeeServiceLive(_, _))
 }

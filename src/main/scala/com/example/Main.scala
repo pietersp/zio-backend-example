@@ -2,19 +2,38 @@ package com.example
 
 import com.augustnagro.magnum.magzio.*
 import com.example.api.Router
-import com.example.repository.{DepartmentRepositoryLive, EmployeePhoneRepositoryLive, EmployeeRepositoryLive, PhoneRepositoryLive}
-import com.example.service.{DepartmentServiceLive, EmployeePhoneServiceLive, EmployeeServiceLive, PhoneServiceLive}
+import com.example.repository.{
+  DepartmentRepositoryLive,
+  EmployeePhoneRepositoryLive,
+  EmployeeRepositoryLive,
+  PhoneRepositoryLive
+}
+import com.example.service.{
+  DepartmentServiceLive,
+  EmployeePhoneServiceLive,
+  EmployeeServiceLive,
+  PhoneServiceLive
+}
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import org.testcontainers.containers.PostgreSQLContainer
 import zio.*
 import zio.http.*
 import zio.logging.jul.bridge.JULBridge
-import zio.logging.{ConsoleLoggerConfig, LogFilter, LogFormat, LoggerNameExtractor, consoleLogger}
+import zio.logging.{
+  ConsoleLoggerConfig,
+  LogFilter,
+  LogFormat,
+  LoggerNameExtractor,
+  consoleLogger
+}
 
 object Main extends ZIOAppDefault with Router {
 
   val logFormat =
-    LogFormat.label("name", LoggerNameExtractor.loggerNameAnnotationOrTrace.toLogFormat())
+    LogFormat.label(
+      "name",
+      LoggerNameExtractor.loggerNameAnnotationOrTrace.toLogFormat()
+    )
       + LogFormat.space
       + LogFormat.default
       + LogFormat.space
@@ -120,7 +139,6 @@ object Main extends ZIOAppDefault with Router {
       phoneTable.update.run()
       employeePhoneTable.update.run()
     }
-
 
   val dbLayer =
     for {

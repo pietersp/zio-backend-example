@@ -16,8 +16,8 @@ trait DepartmentRepository {
 }
 
 final case class DepartmentRepositoryLive(xa: Transactor)
-  extends Repo[Department, tables.Department, Int]
-  with DepartmentRepository {
+    extends Repo[Department, tables.Department, Int]
+    with DepartmentRepository {
 
   override def create(department: Department): UIO[Int] =
     xa.transact {
@@ -31,7 +31,9 @@ final case class DepartmentRepositoryLive(xa: Transactor)
 
   override def retrieveByName(departmentName: String): UIO[Option[Department]] =
     xa.transact {
-      val spec = Spec[tables.Department].where(sql"${tables.Department.table.name} = $departmentName")
+      val spec = Spec[tables.Department].where(
+        sql"${tables.Department.table.name} = $departmentName"
+      )
 
       findAll(spec).headOption.map(_.toDomain)
     }.orDie
@@ -53,6 +55,6 @@ final case class DepartmentRepositoryLive(xa: Transactor)
 }
 
 object DepartmentRepositoryLive {
-  val layer: URLayer[Transactor, DepartmentRepositoryLive] = 
+  val layer: URLayer[Transactor, DepartmentRepositoryLive] =
     ZLayer.fromFunction(DepartmentRepositoryLive(_))
 }

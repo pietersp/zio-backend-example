@@ -6,7 +6,7 @@ sealed trait AppError derives Schema
 object AppError {
   case object DepartmentNotFound extends AppError derives Schema
   type DepartmentNotFound = DepartmentNotFound.type
- 
+
   case object DepartmentAlreadyExists extends AppError derives Schema
   type DepartmentAlreadyExists = DepartmentAlreadyExists.type
 

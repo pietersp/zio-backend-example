@@ -21,7 +21,7 @@ final case class PhoneServiceLive(
       maybePhone <- phoneRepository.retrieveByNumber(phone.number)
       phoneId <- maybePhone match {
         case Some(_) => ZIO.fail(PhoneAlreadyExists)
-        case None => phoneRepository.create(phone)
+        case None    => phoneRepository.create(phone)
       }
     } yield phoneId
 
@@ -37,5 +37,6 @@ final case class PhoneServiceLive(
 }
 
 object PhoneServiceLive {
-  val layer: URLayer[PhoneRepository, PhoneServiceLive] = ZLayer.fromFunction(PhoneServiceLive(_))
+  val layer: URLayer[PhoneRepository, PhoneServiceLive] =
+    ZLayer.fromFunction(PhoneServiceLive(_))
 }

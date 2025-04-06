@@ -11,20 +11,29 @@ trait PhoneEndpoints {
     Endpoint(Method.POST / "phone")
       .in[Phone](Doc.p("Phone to be created"))
       .out[Int](Doc.p("ID of the created phone"))
-      .outError[PhoneAlreadyExists](Status.Conflict, Doc.p("The phone number already exists"))
+      .outError[PhoneAlreadyExists](
+        Status.Conflict,
+        Doc.p("The phone number already exists")
+      )
       ?? Doc.p("Create a new phone")
 
   val getPhoneById =
     Endpoint(Method.GET / "phone" / int("id"))
       .out[Phone](Doc.p("Phone"))
-      .outError[PhoneNotFound](Status.NotFound, Doc.p("The phone was not found"))
+      .outError[PhoneNotFound](
+        Status.NotFound,
+        Doc.p("The phone was not found")
+      )
       ?? Doc.p("Obtain the phone with the given `id`")
 
   val updatePhone =
     Endpoint(Method.PUT / "phone" / int("id"))
       .in[Phone](Doc.p("Phone to be updated"))
       .out[Unit]
-      .outError[PhoneNotFound](Status.NotFound, Doc.p("The phone was not found"))
+      .outError[PhoneNotFound](
+        Status.NotFound,
+        Doc.p("The phone was not found")
+      )
       ?? Doc.p("Update the phone with the given `id`")
 
   val deletePhone =

@@ -13,7 +13,7 @@ case class Department(
 
 object Department {
   val table = TableInfo[domain.Department, Department, Int]
-  
+
   def fromDomain(departmentId: Int, department: domain.Department): Department =
     Department(
       id = departmentId,

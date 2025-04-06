@@ -48,5 +48,6 @@ final case class PhoneRepositoryLive(xa: Transactor)
 }
 
 object PhoneRepositoryLive {
-  val layer: URLayer[Transactor, PhoneRepositoryLive] = ZLayer.fromFunction(PhoneRepositoryLive(_))
+  val layer: URLayer[Transactor, PhoneRepositoryLive] =
+    ZLayer.fromFunction(PhoneRepositoryLive(_))
 }
