@@ -2,10 +2,10 @@ package com.example.api.endpoint
 
 import com.example.domain.{Department, DepartmentId, DepartmentIdDescription}
 import com.example.error.AppError.{DepartmentAlreadyExists, DepartmentNotFound}
+import com.example.util.iron.given
 import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
-import com.example.util.given
 
 trait DepartmentEndpoints extends Codecs {
   val createDepartment =

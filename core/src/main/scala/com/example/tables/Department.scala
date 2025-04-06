@@ -1,8 +1,8 @@
 package com.example.tables
 
-import com.example.domain
-import com.example.domain.{DepartmentName, DepartmentId}
 import com.augustnagro.magnum.magzio.*
+import com.example.domain
+import com.example.domain.{DepartmentId, DepartmentName}
 import com.example.util.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)

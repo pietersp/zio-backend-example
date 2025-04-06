@@ -2,10 +2,10 @@ package com.example.api.endpoint
 
 import com.example.domain.{Phone, PhoneId, PhoneIdDescription}
 import com.example.error.AppError.{PhoneAlreadyExists, PhoneNotFound}
+import com.example.util.iron.given
 import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
-import com.example.util.given
 
 trait PhoneEndpoints extends Codecs {
   val createPhone =

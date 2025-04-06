@@ -2,10 +2,10 @@ package com.example.api.endpoint
 
 import com.example.domain.{Employee, EmployeeId, EmployeeIdDescription}
 import com.example.error.AppError.{DepartmentNotFound, EmployeeNotFound}
+import com.example.util.iron.given
 import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
-import com.example.util.given
 
 trait EmployeeEndpoints extends Codecs {
   val createEmployee =

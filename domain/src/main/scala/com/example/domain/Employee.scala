@@ -1,7 +1,7 @@
 package com.example.domain
 
+import com.example.util.iron.given
 import zio.schema.*
-import com.example.util.given
 
 case class Employee(name: EmployeeName, age: Age, departmentId: DepartmentId)
     derives Schema

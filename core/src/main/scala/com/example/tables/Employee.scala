@@ -1,7 +1,7 @@
 package com.example.tables
 
-import com.example.domain
 import com.augustnagro.magnum.magzio.*
+import com.example.domain
 import com.example.domain.{Age, DepartmentId, EmployeeId, EmployeeName}
 import com.example.util.given
 
