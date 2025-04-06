@@ -16,7 +16,11 @@ endpoint codecs that make use of schemas, and `iron` for refined types of our do
 The `endpoints` contain only the `zio-http` endpoints. These are to be implemented in `core`. The idea is that this 
 could be distributed independently so other services can make use of it to generate clients to call this service with.
 
-The `core` project is the main app that starts a `zio-http` server and contains the business logic (services), handlers
+The `core` project contains the business logic and the interfaces for the repos that we need to use. The implementation 
+of these repos currently live in `app` (this might change). The idea is for core to contain only the business logic,
+independent of implementation of "how" data is accessed. It should only have a dependency on `domain`
+
+The `app` project is the main app that starts a `zio-http` server and contains handlers
 that are responsible for implementing our `zio-http` endpoints, the implementation to access the database (this might 
 change) and the main entrypoint to start the program 
 

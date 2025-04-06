@@ -7,7 +7,7 @@ lazy val projectName = "zio-backend-example"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "zio-backend-example"
+    name := projectName
   )
   .aggregate(core, domain)
 
@@ -20,17 +20,9 @@ lazy val core = (project in file("core"))
     libraryDependencies ++= Seq(
       // ZIO HTTP
       "dev.zio" %% "zio-http" % "3.2.0",
-      // Database
-      "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
-      "org.postgresql" % "postgresql" % "42.7.5",
-      "org.testcontainers" % "testcontainers" % "1.20.6",
-      "org.testcontainers" % "postgresql" % "1.20.6",
-      "com.zaxxer" % "HikariCP" % "6.3.0",
-      // Logging
-      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
   )
-  .dependsOn(domain, endpoints)
+  .dependsOn(domain)
 
 lazy val domain = (project in file("domain"))
   .settings(
@@ -59,3 +51,24 @@ lazy val endpoints = (project in file("endpoints"))
       "io.github.iltotore" %% "iron" % "3.0.0",
     )
   ).dependsOn(domain)
+
+lazy val app = (project in file("app"))
+  .settings(
+    name := s"$projectName-app",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      // ZIO HTTP
+      "dev.zio" %% "zio-http" % "3.2.0",
+      // Database
+      "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
+      "org.postgresql" % "postgresql" % "42.7.5",
+      "org.testcontainers" % "testcontainers" % "1.20.6",
+      "org.testcontainers" % "postgresql" % "1.20.6",
+      "com.zaxxer" % "HikariCP" % "6.3.0",
+      // Logging
+      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
+    )
+
+  ).dependsOn(core, domain, endpoints)
