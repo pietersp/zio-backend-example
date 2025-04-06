@@ -59,7 +59,5 @@ lazy val endpoints = (project in file("endpoints"))
       "dev.zio" %% "zio-http" % "3.2.0",
       // Iron
       "io.github.iltotore" %% "iron" % "3.0.0",
-      // Logging
-      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
   ).dependsOn(domain)
