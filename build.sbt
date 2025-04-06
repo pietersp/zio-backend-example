@@ -50,7 +50,7 @@ lazy val domain = (project in file("domain"))
 
 lazy val endpoints = (project in file("endpoints"))
   .settings(
-    name := s"$projectName-core",
+    name := s"$projectName-endpoints",
     scalacOptions ++= Seq(
       "-Wunused:imports"
     ),
