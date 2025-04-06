@@ -26,8 +26,6 @@ lazy val core = (project in file("core"))
       "org.testcontainers" % "testcontainers" % "1.20.6",
       "org.testcontainers" % "postgresql" % "1.20.6",
       "com.zaxxer" % "HikariCP" % "6.3.0",
-      // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0",
       // Logging
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
