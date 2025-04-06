@@ -1,15 +1,18 @@
 package com.example.repository
 
 import com.augustnagro.magnum.magzio.*
-import com.example.domain.Phone
+import com.example.domain.{EmployeeId, Phone, PhoneId}
 import com.example.tables
-
+import com.example.util.given
 import zio.*
 
 trait EmployeePhoneRepository {
-  def addPhoneToEmployee(phoneId: Int, employeeId: Int): UIO[Unit]
-  def retrieveEmployeePhones(employeeId: Int): UIO[Vector[Phone]]
-  def removePhoneFromEmployee(phoneId: Int, employeeId: Int): UIO[Unit]
+  def addPhoneToEmployee(phoneId: PhoneId, employeeId: EmployeeId): UIO[Unit]
+  def retrieveEmployeePhones(employeeId: EmployeeId): UIO[Vector[Phone]]
+  def removePhoneFromEmployee(
+    phoneId: PhoneId,
+    employeeId: EmployeeId
+  ): UIO[Unit]
 }
 
 final case class EmployeePhoneRepositoryLive(xa: Transactor)
@@ -17,14 +20,16 @@ final case class EmployeePhoneRepositoryLive(xa: Transactor)
     with EmployeePhoneRepository {
 
   override def addPhoneToEmployee(
-    phoneId: Int,
-    employeeId: Int
+    phoneId: PhoneId,
+    employeeId: EmployeeId
   ): UIO[Unit] =
     xa.transact {
       insert(tables.EmployeePhone(employeeId, phoneId))
     }.orDie
 
-  override def retrieveEmployeePhones(employeeId: Int): UIO[Vector[Phone]] =
+  override def retrieveEmployeePhones(
+    employeeId: EmployeeId
+  ): UIO[Vector[Phone]] =
     xa.transact {
       val statement =
         sql"""
@@ -37,8 +42,8 @@ final case class EmployeePhoneRepositoryLive(xa: Transactor)
     }.orDie
 
   override def removePhoneFromEmployee(
-    phoneId: Int,
-    employeeId: Int
+    phoneId: PhoneId,
+    employeeId: EmployeeId
   ): UIO[Unit] =
     xa.transact {
       delete(tables.EmployeePhone(employeeId, phoneId))

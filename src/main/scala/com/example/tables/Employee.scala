@@ -2,13 +2,15 @@ package com.example.tables
 
 import com.example.domain
 import com.augustnagro.magnum.magzio.*
+import com.example.domain.{Age, DepartmentId, EmployeeId, EmployeeName}
+import com.example.util.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 final case class Employee(
-  @Id id: Int,
-  name: String,
-  age: Int,
-  departmentId: Int
+  @Id id: EmployeeId,
+  name: EmployeeName,
+  age: Age,
+  departmentId: DepartmentId
 ) derives DbCodec {
   val toDomain: domain.Employee = domain.Employee(name, age, departmentId)
 }
@@ -16,7 +18,7 @@ final case class Employee(
 object Employee {
   val table = TableInfo[domain.Employee, Employee, Int]
 
-  def fromDomain(employeeId: Int, employee: domain.Employee): Employee =
+  def fromDomain(employeeId: EmployeeId, employee: domain.Employee): Employee =
     Employee(
       id = employeeId,
       name = employee.name,

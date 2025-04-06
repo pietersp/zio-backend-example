@@ -1,19 +1,21 @@
 package com.example.service
 
-import com.example.domain.Department
+import com.example.domain.{Department, DepartmentId}
 import com.example.error.AppError.{DepartmentAlreadyExists, DepartmentNotFound}
 import com.example.repository.DepartmentRepository
 import zio.*
 
 trait DepartmentService {
-  def create(department: Department): IO[DepartmentAlreadyExists, Int]
+  def create(department: Department): IO[DepartmentAlreadyExists, DepartmentId]
   def retrieveAll: UIO[Vector[Department]]
-  def retrieveById(departmentId: Int): IO[DepartmentNotFound, Department]
+  def retrieveById(
+    departmentId: DepartmentId
+  ): IO[DepartmentNotFound, Department]
   def update(
-    departmentId: Int,
+    departmentId: DepartmentId,
     department: Department
   ): IO[DepartmentNotFound, Unit]
-  def delete(departmentId: Int): UIO[Unit]
+  def delete(departmentId: DepartmentId): UIO[Unit]
 }
 
 final case class DepartmentServiceLive(
@@ -22,7 +24,7 @@ final case class DepartmentServiceLive(
 
   override def create(
     department: Department
-  ): IO[DepartmentAlreadyExists, Int] =
+  ): IO[DepartmentAlreadyExists, DepartmentId] =
     for {
       maybeDepartment <- departmentRepository.retrieveByName(department.name)
       departmentId <- maybeDepartment match {
@@ -35,18 +37,18 @@ final case class DepartmentServiceLive(
     departmentRepository.retrieveAll
 
   override def retrieveById(
-    departmentId: Int
+    departmentId: DepartmentId
   ): IO[DepartmentNotFound, Department] =
     departmentRepository.retrieve(departmentId).someOrFail(DepartmentNotFound)
 
   override def update(
-    departmentId: Int,
+    departmentId: DepartmentId,
     department: Department
   ): IO[DepartmentNotFound, Unit] =
     departmentRepository.retrieve(departmentId).someOrFail(DepartmentNotFound)
       *> departmentRepository.update(departmentId, department)
 
-  override def delete(departmentId: Int): UIO[Unit] =
+  override def delete(departmentId: DepartmentId): UIO[Unit] =
     departmentRepository.delete(departmentId)
 }
 

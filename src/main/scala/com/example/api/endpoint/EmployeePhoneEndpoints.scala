@@ -1,18 +1,31 @@
 package com.example.api.endpoint
 
-import com.example.domain.Phone
+import com.example.domain.{
+  EmployeeId,
+  EmployeeIdDescription,
+  Phone,
+  PhoneId,
+  PhoneIdDescription
+}
 import com.example.error.AppError
 import com.example.error.AppError.EmployeeNotFound
 import zio.http.*
 import zio.http.codec.*
+import zio.http.endpoint.AuthType.None
 import zio.http.endpoint.Endpoint
 
-trait EmployeePhoneEndpoints {
-  val addPhoneToEmployee =
+trait EmployeePhoneEndpoints extends Codecs {
+  val addPhoneToEmployee: Endpoint[
+    (EmployeeId, PhoneId),
+    (EmployeeId, PhoneId),
+    AppError,
+    Unit,
+    None
+  ] =
     Endpoint(
       Method.POST
-        / "employee" / int("employeeId")
-        / "phone" / int("phoneId")
+        / "employee" / idCodec[EmployeeIdDescription]()
+        / "phone" / idCodec[PhoneIdDescription]()
     )
       .out[Unit]
       .outError[AppError](
@@ -21,8 +34,11 @@ trait EmployeePhoneEndpoints {
       )
       ?? Doc.p("Add a phone to an employee")
 
-  val retrieveEmployeePhones =
-    Endpoint(Method.GET / "employee" / int("employeeId") / "phone")
+  val retrieveEmployeePhones
+    : Endpoint[EmployeeId, EmployeeId, EmployeeNotFound, Vector[Phone], None] =
+    Endpoint(
+      Method.GET / "employee" / idCodec[EmployeeIdDescription]() / "phone"
+    )
       .out[Vector[Phone]](Doc.p("List of employee's phones"))
       .outError[EmployeeNotFound](
         Status.NotFound,
@@ -30,11 +46,17 @@ trait EmployeePhoneEndpoints {
       )
       ?? Doc.p("Obtain a list of the employee's phones")
 
-  val removePhoneFromEmployee =
+  val removePhoneFromEmployee: Endpoint[
+    (EmployeeId, PhoneId),
+    (EmployeeId, PhoneId),
+    AppError,
+    Unit,
+    None
+  ] =
     Endpoint(
       Method.DELETE
-        / "employee" / int("employeeId")
-        / "phone" / int("phoneId")
+        / "employee" / idCodec[EmployeeIdDescription]()
+        / "phone" / idCodec[PhoneIdDescription]()
     )
       .out[Unit]
       .outError[AppError](

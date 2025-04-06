@@ -1,11 +1,13 @@
 package com.example.tables
 
 import com.augustnagro.magnum.magzio.*
+import com.example.domain.{EmployeeId, PhoneId}
+import com.example.util.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 case class EmployeePhone(
-  employeeId: Int,
-  phoneId: Int
+  employeeId: EmployeeId,
+  phoneId: PhoneId
 ) derives DbCodec
 
 object EmployeePhone {

@@ -1,11 +1,13 @@
 package com.example.tables
 import com.augustnagro.magnum.magzio.*
 import com.example.domain
+import com.example.domain.{PhoneId, PhoneNumber}
+import com.example.util.given
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
 case class Phone(
-  @Id id: Int,
-  number: String
+  @Id id: PhoneId,
+  number: PhoneNumber
 ) derives DbCodec {
   def toDomain: domain.Phone = domain.Phone(number)
 }
@@ -13,7 +15,7 @@ case class Phone(
 object Phone {
   val table = TableInfo[domain.Phone, Phone, Int]
 
-  def fromDomain(phoneId: Int, phone: domain.Phone): Phone =
+  def fromDomain(phoneId: PhoneId, phone: domain.Phone): Phone =
     Phone(
       id = phoneId,
       number = phone.number

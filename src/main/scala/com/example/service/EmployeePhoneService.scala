@@ -1,6 +1,6 @@
 package com.example.service
 
-import com.example.domain.Phone
+import com.example.domain.{EmployeeId, Phone, PhoneId}
 import com.example.error.AppError
 import com.example.error.AppError.*
 import com.example.repository.{
@@ -11,11 +11,17 @@ import com.example.repository.{
 import zio.*
 
 trait EmployeePhoneService {
-  def addPhoneToEmployee(phoneId: Int, employeeId: Int): IO[AppError, Unit]
+  def addPhoneToEmployee(
+    phoneId: PhoneId,
+    employeeId: EmployeeId
+  ): IO[AppError, Unit]
   def retrieveEmployeePhones(
-    employeeId: Int
+    employeeId: EmployeeId
   ): IO[EmployeeNotFound, Vector[Phone]]
-  def removePhoneFromEmployee(phoneId: Int, employeeId: Int): IO[AppError, Unit]
+  def removePhoneFromEmployee(
+    phoneId: PhoneId,
+    employeeId: EmployeeId
+  ): IO[AppError, Unit]
 }
 
 final case class EmployeePhoneServiceLive(
@@ -25,22 +31,22 @@ final case class EmployeePhoneServiceLive(
 ) extends EmployeePhoneService {
 
   override def addPhoneToEmployee(
-    phoneId: Int,
-    employeeId: Int
+    phoneId: PhoneId,
+    employeeId: EmployeeId
   ): IO[AppError, Unit] =
     phoneRepository.retrieve(phoneId).someOrFail(PhoneNotFound)
       *> employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
       *> employeePhoneRepository.addPhoneToEmployee(phoneId, employeeId)
 
   override def retrieveEmployeePhones(
-    employeeId: Int
+    employeeId: EmployeeId
   ): IO[EmployeeNotFound, Vector[Phone]] =
     employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
       *> employeePhoneRepository.retrieveEmployeePhones(employeeId)
 
   override def removePhoneFromEmployee(
-    phoneId: Int,
-    employeeId: Int
+    phoneId: PhoneId,
+    employeeId: EmployeeId
   ): IO[AppError, Unit] =
     phoneRepository.retrieve(phoneId).someOrFail(PhoneNotFound)
       *> employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)

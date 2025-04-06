@@ -1,16 +1,19 @@
 package com.example.service
 
-import com.example.domain.Employee
+import com.example.domain.{Employee, EmployeeId}
 import com.example.error.AppError.{DepartmentNotFound, EmployeeNotFound}
 import com.example.repository.{DepartmentRepository, EmployeeRepository}
 import zio.*
 
 trait EmployeeService {
-  def create(employee: Employee): IO[DepartmentNotFound, Int]
+  def create(employee: Employee): IO[DepartmentNotFound, EmployeeId]
   def retrieveAll: UIO[Vector[Employee]]
-  def retrieveById(employeeId: Int): IO[EmployeeNotFound, Employee]
-  def update(employeeId: Int, employee: Employee): IO[EmployeeNotFound, Unit]
-  def delete(employeeId: Int): UIO[Unit]
+  def retrieveById(employeeId: EmployeeId): IO[EmployeeNotFound, Employee]
+  def update(
+    employeeId: EmployeeId,
+    employee: Employee
+  ): IO[EmployeeNotFound, Unit]
+  def delete(employeeId: EmployeeId): UIO[Unit]
 }
 
 final case class EmployeeServiceLive(
@@ -18,7 +21,7 @@ final case class EmployeeServiceLive(
   departmentRepository: DepartmentRepository
 ) extends EmployeeService {
 
-  override def create(employee: Employee): IO[DepartmentNotFound, Int] =
+  override def create(employee: Employee): IO[DepartmentNotFound, EmployeeId] =
     departmentRepository
       .retrieve(employee.departmentId)
       .someOrFail(DepartmentNotFound)
@@ -27,17 +30,19 @@ final case class EmployeeServiceLive(
   override def retrieveAll: UIO[Vector[Employee]] =
     employeeRepository.retrieveAll
 
-  override def retrieveById(employeeId: Int): IO[EmployeeNotFound, Employee] =
+  override def retrieveById(
+    employeeId: EmployeeId
+  ): IO[EmployeeNotFound, Employee] =
     employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
 
   override def update(
-    employeeId: Int,
+    employeeId: EmployeeId,
     employee: Employee
   ): IO[EmployeeNotFound, Unit] =
     employeeRepository.retrieve(employeeId).someOrFail(EmployeeNotFound)
       *> employeeRepository.update(employeeId, employee)
 
-  override def delete(employeeId: Int): UIO[Unit] =
+  override def delete(employeeId: EmployeeId): UIO[Unit] =
     employeeRepository.delete(employeeId)
 }
 
