@@ -6,7 +6,6 @@ import com.example.tables
 import com.example.util.db.given
 import zio.*
 
-
 final case class PhoneRepositoryLive(xa: Transactor)
     extends Repo[Phone, tables.Phone, PhoneId]
     with PhoneRepository {

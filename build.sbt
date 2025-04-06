@@ -9,48 +9,7 @@ lazy val root = (project in file("."))
   .settings(
     name := projectName
   )
-  .aggregate(core, domain)
-
-lazy val core = (project in file("core"))
-  .settings(
-    name := s"$projectName-core",
-    scalacOptions ++= Seq(
-      "-Wunused:imports"
-    ),
-    libraryDependencies ++= Seq(
-      // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
-    )
-  )
-  .dependsOn(domain)
-
-lazy val domain = (project in file("domain"))
-  .settings(
-    name := s"$projectName-domain",
-    scalacOptions ++= Seq(
-      "-Wunused:imports"
-    ),
-    libraryDependencies ++= Seq(
-      // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
-      // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0",
-    )
-  )
-
-lazy val endpoints = (project in file("endpoints"))
-  .settings(
-    name := s"$projectName-endpoints",
-    scalacOptions ++= Seq(
-      "-Wunused:imports"
-    ),
-    libraryDependencies ++= Seq(
-      // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
-      // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0",
-    )
-  ).dependsOn(domain)
+  .aggregate(app, core, domain, endpoints)
 
 lazy val app = (project in file("app"))
   .settings(
@@ -70,5 +29,43 @@ lazy val app = (project in file("app"))
       // Logging
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
     )
+  )
+  .dependsOn(core, domain, endpoints)
 
-  ).dependsOn(core, domain, endpoints)
+lazy val core = (project in file("core"))
+  .settings(
+    name := s"$projectName-core",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    )
+  )
+  .dependsOn(domain)
+
+lazy val domain = (project in file("domain"))
+  .settings(
+    name := s"$projectName-domain",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      // ZIO HTTP
+      "dev.zio" %% "zio-http" % "3.2.0",
+      // Iron
+      "io.github.iltotore" %% "iron" % "3.0.0"
+    )
+  )
+
+lazy val endpoints = (project in file("endpoints"))
+  .settings(
+    name := s"$projectName-endpoints",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      // ZIO HTTP
+      "dev.zio" %% "zio-http" % "3.2.0",
+      // Iron
+      "io.github.iltotore" %% "iron" % "3.0.0"
+    )
+  )
+  .dependsOn(domain)
