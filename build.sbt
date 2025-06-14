@@ -20,12 +20,12 @@ lazy val app = (project in file("app"))
     ),
     libraryDependencies ++= Seq(
       // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
+      "dev.zio" %% "zio-http" % "3.3.3",
       // Database
       "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
-      "org.postgresql" % "postgresql" % "42.7.5",
-      "org.testcontainers" % "testcontainers" % "1.20.6",
-      "org.testcontainers" % "postgresql" % "1.20.6",
+      "org.postgresql" % "postgresql" % "42.7.6",
+      "org.testcontainers" % "testcontainers" % "1.21.1",
+      "org.testcontainers" % "postgresql" % "1.21.1",
       "com.zaxxer" % "HikariCP" % "6.3.0",
       // Logging
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
@@ -42,9 +42,9 @@ lazy val client = (project in file("client"))
     ),
     libraryDependencies ++= Seq(
       // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
+      "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0"
+      "io.github.iltotore" %% "iron" % "3.0.1"
     )
   )
   .dependsOn(domain, endpoints)
@@ -66,9 +66,9 @@ lazy val domain = (project in file("domain"))
     ),
     libraryDependencies ++= Seq(
       // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
+      "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0"
+      "io.github.iltotore" %% "iron" % "3.0.1"
     )
   )
 
@@ -80,9 +80,9 @@ lazy val endpoints = (project in file("endpoints"))
     ),
     libraryDependencies ++= Seq(
       // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.2.0",
+      "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
-      "io.github.iltotore" %% "iron" % "3.0.0"
+      "io.github.iltotore" %% "iron" % "3.0.1"
     )
   )
   .dependsOn(domain)
