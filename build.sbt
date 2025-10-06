@@ -3,7 +3,17 @@ ThisBuild / scalaVersion := "3.6.4"
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
+// Test framework configuration
+ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+
 lazy val projectName = "zio-backend-example"
+
+// Common test dependencies
+lazy val testDependencies = Seq(
+  "dev.zio" %% "zio-test" % "2.1.14" % Test,
+  "dev.zio" %% "zio-test-sbt" % "2.1.14" % Test,
+  "dev.zio" %% "zio-test-magnolia" % "2.1.14" % Test
+)
 
 lazy val root = (project in file("."))
   .settings(
@@ -29,7 +39,7 @@ lazy val app = (project in file("app"))
       "com.zaxxer" % "HikariCP" % "6.3.0",
       // Logging
       "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
-    ),
+    ) ++ testDependencies,
     Compile / mainClass := Some("com.example.Main")
   )
   .dependsOn(core, domain, endpoints)
@@ -45,7 +55,7 @@ lazy val client = (project in file("client"))
       "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
       "io.github.iltotore" %% "iron" % "3.0.1"
-    )
+    ) ++ testDependencies
   )
   .dependsOn(domain, endpoints)
 
@@ -54,7 +64,8 @@ lazy val core = (project in file("core"))
     name := s"$projectName-core",
     scalacOptions ++= Seq(
       "-Wunused:imports"
-    )
+    ),
+    libraryDependencies ++= testDependencies
   )
   .dependsOn(domain)
 
@@ -69,7 +80,7 @@ lazy val domain = (project in file("domain"))
       "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
       "io.github.iltotore" %% "iron" % "3.0.1"
-    )
+    ) ++ testDependencies
   )
 
 lazy val endpoints = (project in file("endpoints"))
@@ -83,6 +94,6 @@ lazy val endpoints = (project in file("endpoints"))
       "dev.zio" %% "zio-http" % "3.3.3",
       // Iron
       "io.github.iltotore" %% "iron" % "3.0.1"
-    )
+    ) ++ testDependencies
   )
   .dependsOn(domain)
