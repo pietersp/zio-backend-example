@@ -7,7 +7,7 @@ import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
 
-trait DepartmentEndpoints extends Codecs {
+object DepartmentEndpoints extends Codecs {
   val createDepartment =
     Endpoint(Method.POST / "department")
       .in[Department](Doc.p("Department to be created"))

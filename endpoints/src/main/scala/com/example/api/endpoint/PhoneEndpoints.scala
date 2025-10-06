@@ -7,7 +7,7 @@ import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
 
-trait PhoneEndpoints extends Codecs {
+object PhoneEndpoints extends Codecs {
   val createPhone =
     Endpoint(Method.POST / "phone")
       .in[Phone](Doc.p("Phone to be created"))
@@ -41,5 +41,4 @@ trait PhoneEndpoints extends Codecs {
     Endpoint(Method.DELETE / "phone" / idCodec[PhoneIdDescription]())
       .out[Unit]
       ?? Doc.p("Delete the phone with the given `id`")
-
 }

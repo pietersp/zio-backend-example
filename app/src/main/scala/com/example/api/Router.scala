@@ -1,11 +1,6 @@
 package com.example.api
 
-import com.example.api.endpoint.{
-  DepartmentEndpoints,
-  EmployeeEndpoints,
-  EmployeePhoneEndpoints,
-  PhoneEndpoints
-}
+import com.example.api.endpoint.*
 import com.example.api.handler.{
   DepartmentHandlers,
   EmployeeHandlers,
@@ -22,48 +17,44 @@ import zio.http.endpoint.openapi.{OpenAPIGen, SwaggerUI}
 import zio.http.{Routes, *}
 
 trait Router
-    extends DepartmentEndpoints
-    with DepartmentHandlers
-    with EmployeeEndpoints
+    extends DepartmentHandlers
     with EmployeeHandlers
-    with PhoneEndpoints
     with PhoneHandlers
-    with EmployeePhoneEndpoints
     with EmployeePhoneHandlers {
 
   private val departmentRoutes =
     Routes(
-      createDepartment.implementHandler(handler(createDepartmentHandler)),
-      getDepartments.implementHandler(handler(getDepartmentsHandler)),
-      getDepartmentById.implementHandler(handler(getDepartmentHandler)),
-      updateDepartment.implementHandler(handler(updateDepartmentHandler)),
-      deleteDepartment.implementHandler(handler(deleteDepartmentHandler))
+      DepartmentEndpoints.createDepartment.implementHandler(handler(createDepartmentHandler)),
+      DepartmentEndpoints.getDepartments.implementHandler(handler(getDepartmentsHandler)),
+      DepartmentEndpoints.getDepartmentById.implementHandler(handler(getDepartmentHandler)),
+      DepartmentEndpoints.updateDepartment.implementHandler(handler(updateDepartmentHandler)),
+      DepartmentEndpoints.deleteDepartment.implementHandler(handler(deleteDepartmentHandler))
     )
 
   private val employeeRoutes =
     Routes(
-      createEmployee.implementHandler(handler(createEmployeeHandler)),
-      getEmployees.implementHandler(handler(getEmployeesHandler)),
-      getEmployeeById.implementHandler(handler(getEmployeeHandler)),
-      updateEmployee.implementHandler(handler(updateEmployeeHandler)),
-      deleteEmployee.implementHandler(handler(deleteEmployeeHandler))
+      EmployeeEndpoints.createEmployee.implementHandler(handler(createEmployeeHandler)),
+      EmployeeEndpoints.getEmployees.implementHandler(handler(getEmployeesHandler)),
+      EmployeeEndpoints.getEmployeeById.implementHandler(handler(getEmployeeHandler)),
+      EmployeeEndpoints.updateEmployee.implementHandler(handler(updateEmployeeHandler)),
+      EmployeeEndpoints.deleteEmployee.implementHandler(handler(deleteEmployeeHandler))
     )
 
   private val phoneRoutes =
     Routes(
-      createPhone.implementHandler(handler(createPhoneHandler)),
-      getPhoneById.implementHandler(handler(getPhoneHandler)),
-      updatePhone.implementHandler(handler(updatePhoneHandler)),
-      deletePhone.implementHandler(handler(deletePhoneHandler))
+      PhoneEndpoints.createPhone.implementHandler(handler(createPhoneHandler)),
+      PhoneEndpoints.getPhoneById.implementHandler(handler(getPhoneHandler)),
+      PhoneEndpoints.updatePhone.implementHandler(handler(updatePhoneHandler)),
+      PhoneEndpoints.deletePhone.implementHandler(handler(deletePhoneHandler))
     )
 
   private val employeePhoneRoutes =
     Routes(
-      addPhoneToEmployee.implementHandler(handler(addPhoneToEmployeeHandler)),
-      retrieveEmployeePhones.implementHandler(
+      EmployeePhoneEndpoints.addPhoneToEmployee.implementHandler(handler(addPhoneToEmployeeHandler)),
+      EmployeePhoneEndpoints.retrieveEmployeePhones.implementHandler(
         handler(retrieveEmployeePhonesHandler)
       ),
-      removePhoneFromEmployee.implementHandler(
+      EmployeePhoneEndpoints.removePhoneFromEmployee.implementHandler(
         handler(removePhoneFromEmployeeHandler)
       )
     )
@@ -77,22 +68,22 @@ trait Router
     SwaggerUI.routes(
       "docs",
       OpenAPIGen.fromEndpoints(
-        createDepartment,
-        getDepartments,
-        getDepartmentById,
-        updateDepartment,
-        deleteDepartment,
-        createEmployee,
-        getEmployeeById,
-        updateEmployee,
-        deleteEmployee,
-        createPhone,
-        getPhoneById,
-        updatePhone,
-        deletePhone,
-        addPhoneToEmployee,
-        retrieveEmployeePhones,
-        removePhoneFromEmployee
+        DepartmentEndpoints.createDepartment,
+        DepartmentEndpoints.getDepartments,
+        DepartmentEndpoints.getDepartmentById,
+        DepartmentEndpoints.updateDepartment,
+        DepartmentEndpoints.deleteDepartment,
+        EmployeeEndpoints.createEmployee,
+        EmployeeEndpoints.getEmployeeById,
+        EmployeeEndpoints.updateEmployee,
+        EmployeeEndpoints.deleteEmployee,
+        PhoneEndpoints.createPhone,
+        PhoneEndpoints.getPhoneById,
+        PhoneEndpoints.updatePhone,
+        PhoneEndpoints.deletePhone,
+        EmployeePhoneEndpoints.addPhoneToEmployee,
+        EmployeePhoneEndpoints.retrieveEmployeePhones,
+        EmployeePhoneEndpoints.removePhoneFromEmployee
       )
     )
 

@@ -7,7 +7,7 @@ import zio.http.*
 import zio.http.codec.*
 import zio.http.endpoint.Endpoint
 
-trait EmployeeEndpoints extends Codecs {
+object EmployeeEndpoints extends Codecs {
   val createEmployee =
     Endpoint(Method.POST / "employee")
       .in[Employee](Doc.p("Employee to be created"))
