@@ -36,9 +36,13 @@ final case class EmployeePhoneRepositoryLive(xa: Transactor)
     phoneId: PhoneId,
     employeeId: EmployeeId
   ): UIO[Unit] =
-    xa.transact {
-      delete(tables.EmployeePhone(employeeId, phoneId))
-    }.orDie
+    (xa.transact {
+      sql"""
+        DELETE FROM ${tables.EmployeePhone.table}
+        WHERE ${tables.EmployeePhone.table.employeeId} = $employeeId
+          AND ${tables.EmployeePhone.table.phoneId} = $phoneId
+      """.update.run()
+    } *> ZIO.unit).orDie
 }
 
 object EmployeePhoneRepositoryLive {
