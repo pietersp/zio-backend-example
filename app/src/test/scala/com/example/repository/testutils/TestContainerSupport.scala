@@ -23,9 +23,9 @@ object TestContainerSupport {
 
   /** Creates a HikariCP datasource from connection details */
   def createDataSource(
-      jdbcUrl: String,
-      username: String,
-      password: String
+    jdbcUrl: String,
+    username: String,
+    password: String
   ): ZIO[Scope, Throwable, HikariDataSource] =
     ZIO.fromAutoCloseable {
       ZIO.attemptBlockingIO {
@@ -105,7 +105,7 @@ object TestContainerSupport {
         )
       } yield dataSource
     }
-    
+
     for {
       dataSource <- dataSourceLayer
       xa <- Transactor.layer(dataSource.get)

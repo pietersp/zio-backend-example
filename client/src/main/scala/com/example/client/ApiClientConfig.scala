@@ -10,15 +10,17 @@ final case class ApiClientConfig(
 )
 
 object ApiClientConfig {
-  
+
   /** Creates a layer from ZIO Config */
   val layer: Layer[Config.Error, ApiClientConfig] =
     ZLayer {
       for {
         baseUrl <- ZIO.config[String](Config.string("api.client.base-url"))
-        timeout <- ZIO.config[Duration](Config.duration("api.client.timeout"))
+        timeout <- ZIO
+          .config[Duration](Config.duration("api.client.timeout"))
           .orElse(ZIO.succeed(30.seconds))
-        retries <- ZIO.config[Int](Config.int("api.client.retries"))
+        retries <- ZIO
+          .config[Int](Config.int("api.client.retries"))
           .orElse(ZIO.succeed(3))
       } yield ApiClientConfig(baseUrl, timeout, retries)
     }

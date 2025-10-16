@@ -10,17 +10,29 @@ import com.example.error.AppError
 /** Comprehensive API client for all endpoints */
 trait ApiClient {
   // Department operations
-  def createDepartment(department: Department): IO[AppError.DepartmentAlreadyExists, DepartmentId]
+  def createDepartment(
+    department: Department
+  ): IO[AppError.DepartmentAlreadyExists, DepartmentId]
   def getDepartments: UIO[Vector[Department]]
-  def getDepartmentById(id: DepartmentId): IO[AppError.DepartmentNotFound, Department]
-  def updateDepartment(id: DepartmentId, department: Department): IO[AppError.DepartmentNotFound, Unit]
+  def getDepartmentById(
+    id: DepartmentId
+  ): IO[AppError.DepartmentNotFound, Department]
+  def updateDepartment(
+    id: DepartmentId,
+    department: Department
+  ): IO[AppError.DepartmentNotFound, Unit]
   def deleteDepartment(id: DepartmentId): UIO[Unit]
 
   // Employee operations
-  def createEmployee(employee: Employee): IO[AppError.DepartmentNotFound, EmployeeId]
+  def createEmployee(
+    employee: Employee
+  ): IO[AppError.DepartmentNotFound, EmployeeId]
   def getEmployees: UIO[Vector[Employee]]
   def getEmployeeById(id: EmployeeId): IO[AppError.EmployeeNotFound, Employee]
-  def updateEmployee(id: EmployeeId, employee: Employee): IO[AppError.EmployeeNotFound, Unit]
+  def updateEmployee(
+    id: EmployeeId,
+    employee: Employee
+  ): IO[AppError.EmployeeNotFound, Unit]
   def deleteEmployee(id: EmployeeId): UIO[Unit]
 
   // Phone operations
@@ -30,21 +42,31 @@ trait ApiClient {
   def deletePhone(id: PhoneId): UIO[Unit]
 
   // EmployeePhone operations
-  def addPhoneToEmployee(employeeId: EmployeeId, phoneId: PhoneId): IO[AppError, Unit]
-  def getEmployeePhones(employeeId: EmployeeId): IO[AppError.EmployeeNotFound, Vector[Phone]]
-  def removePhoneFromEmployee(employeeId: EmployeeId, phoneId: PhoneId): IO[AppError, Unit]
+  def addPhoneToEmployee(
+    employeeId: EmployeeId,
+    phoneId: PhoneId
+  ): IO[AppError, Unit]
+  def getEmployeePhones(
+    employeeId: EmployeeId
+  ): IO[AppError.EmployeeNotFound, Vector[Phone]]
+  def removePhoneFromEmployee(
+    employeeId: EmployeeId,
+    phoneId: PhoneId
+  ): IO[AppError, Unit]
 }
 
 final case class ApiClientLive(
   client: Client,
   baseUrl: URL
 ) extends ApiClient {
-  
+
   private val locator = EndpointLocator.fromURL(baseUrl)
   private val executor = EndpointExecutor(client, locator)
 
   // Department operations
-  override def createDepartment(department: Department): IO[AppError.DepartmentAlreadyExists, DepartmentId] =
+  override def createDepartment(
+    department: Department
+  ): IO[AppError.DepartmentAlreadyExists, DepartmentId] =
     ZIO.scoped {
       executor(DepartmentEndpoints.createDepartment(department))
     }
@@ -54,12 +76,17 @@ final case class ApiClientLive(
       executor(DepartmentEndpoints.getDepartments(()))
     }
 
-  override def getDepartmentById(id: DepartmentId): IO[AppError.DepartmentNotFound, Department] =
+  override def getDepartmentById(
+    id: DepartmentId
+  ): IO[AppError.DepartmentNotFound, Department] =
     ZIO.scoped {
       executor(DepartmentEndpoints.getDepartmentById(id))
     }
 
-  override def updateDepartment(id: DepartmentId, department: Department): IO[AppError.DepartmentNotFound, Unit] =
+  override def updateDepartment(
+    id: DepartmentId,
+    department: Department
+  ): IO[AppError.DepartmentNotFound, Unit] =
     ZIO.scoped {
       executor(DepartmentEndpoints.updateDepartment(id, department))
     }
@@ -70,7 +97,9 @@ final case class ApiClientLive(
     }
 
   // Employee operations
-  override def createEmployee(employee: Employee): IO[AppError.DepartmentNotFound, EmployeeId] =
+  override def createEmployee(
+    employee: Employee
+  ): IO[AppError.DepartmentNotFound, EmployeeId] =
     ZIO.scoped {
       executor(EmployeeEndpoints.createEmployee(employee))
     }
@@ -80,12 +109,17 @@ final case class ApiClientLive(
       executor(EmployeeEndpoints.getEmployees(()))
     }
 
-  override def getEmployeeById(id: EmployeeId): IO[AppError.EmployeeNotFound, Employee] =
+  override def getEmployeeById(
+    id: EmployeeId
+  ): IO[AppError.EmployeeNotFound, Employee] =
     ZIO.scoped {
       executor(EmployeeEndpoints.getEmployeeById(id))
     }
 
-  override def updateEmployee(id: EmployeeId, employee: Employee): IO[AppError.EmployeeNotFound, Unit] =
+  override def updateEmployee(
+    id: EmployeeId,
+    employee: Employee
+  ): IO[AppError.EmployeeNotFound, Unit] =
     ZIO.scoped {
       executor(EmployeeEndpoints.updateEmployee(id, employee))
     }
@@ -96,7 +130,9 @@ final case class ApiClientLive(
     }
 
   // Phone operations
-  override def createPhone(phone: Phone): IO[AppError.PhoneAlreadyExists, PhoneId] =
+  override def createPhone(
+    phone: Phone
+  ): IO[AppError.PhoneAlreadyExists, PhoneId] =
     ZIO.scoped {
       executor(PhoneEndpoints.createPhone(phone))
     }
@@ -106,7 +142,10 @@ final case class ApiClientLive(
       executor(PhoneEndpoints.getPhoneById(id))
     }
 
-  override def updatePhone(id: PhoneId, phone: Phone): IO[AppError.PhoneNotFound, Unit] =
+  override def updatePhone(
+    id: PhoneId,
+    phone: Phone
+  ): IO[AppError.PhoneNotFound, Unit] =
     ZIO.scoped {
       executor(PhoneEndpoints.updatePhone(id, phone))
     }
@@ -117,19 +156,29 @@ final case class ApiClientLive(
     }
 
   // EmployeePhone operations
-  override def addPhoneToEmployee(employeeId: EmployeeId, phoneId: PhoneId): IO[AppError, Unit] =
+  override def addPhoneToEmployee(
+    employeeId: EmployeeId,
+    phoneId: PhoneId
+  ): IO[AppError, Unit] =
     ZIO.scoped {
       executor(EmployeePhoneEndpoints.addPhoneToEmployee(employeeId, phoneId))
     }
 
-  override def getEmployeePhones(employeeId: EmployeeId): IO[AppError.EmployeeNotFound, Vector[Phone]] =
+  override def getEmployeePhones(
+    employeeId: EmployeeId
+  ): IO[AppError.EmployeeNotFound, Vector[Phone]] =
     ZIO.scoped {
       executor(EmployeePhoneEndpoints.retrieveEmployeePhones(employeeId))
     }
 
-  override def removePhoneFromEmployee(employeeId: EmployeeId, phoneId: PhoneId): IO[AppError, Unit] =
+  override def removePhoneFromEmployee(
+    employeeId: EmployeeId,
+    phoneId: PhoneId
+  ): IO[AppError, Unit] =
     ZIO.scoped {
-      executor(EmployeePhoneEndpoints.removePhoneFromEmployee(employeeId, phoneId))
+      executor(
+        EmployeePhoneEndpoints.removePhoneFromEmployee(employeeId, phoneId)
+      )
     }
 }
 
@@ -139,8 +188,13 @@ object ApiClientLive {
       for {
         client <- ZIO.service[Client]
         config <- ZIO.service[ApiClientConfig]
-        baseUrl <- ZIO.fromEither(URL.decode(config.baseUrl))
-          .mapError(error => new RuntimeException(s"Invalid base URL: ${config.baseUrl} - $error"))
+        baseUrl <- ZIO
+          .fromEither(URL.decode(config.baseUrl))
+          .mapError(error =>
+            new RuntimeException(
+              s"Invalid base URL: ${config.baseUrl} - $error"
+            )
+          )
       } yield ApiClientLive(client, baseUrl)
     }
 }

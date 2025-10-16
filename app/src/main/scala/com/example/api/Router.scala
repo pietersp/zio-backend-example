@@ -24,20 +24,40 @@ trait Router
 
   private val departmentRoutes =
     Routes(
-      DepartmentEndpoints.createDepartment.implementHandler(handler(createDepartmentHandler)),
-      DepartmentEndpoints.getDepartments.implementHandler(handler(getDepartmentsHandler)),
-      DepartmentEndpoints.getDepartmentById.implementHandler(handler(getDepartmentHandler)),
-      DepartmentEndpoints.updateDepartment.implementHandler(handler(updateDepartmentHandler)),
-      DepartmentEndpoints.deleteDepartment.implementHandler(handler(deleteDepartmentHandler))
+      DepartmentEndpoints.createDepartment.implementHandler(
+        handler(createDepartmentHandler)
+      ),
+      DepartmentEndpoints.getDepartments.implementHandler(
+        handler(getDepartmentsHandler)
+      ),
+      DepartmentEndpoints.getDepartmentById.implementHandler(
+        handler(getDepartmentHandler)
+      ),
+      DepartmentEndpoints.updateDepartment.implementHandler(
+        handler(updateDepartmentHandler)
+      ),
+      DepartmentEndpoints.deleteDepartment.implementHandler(
+        handler(deleteDepartmentHandler)
+      )
     )
 
   private val employeeRoutes =
     Routes(
-      EmployeeEndpoints.createEmployee.implementHandler(handler(createEmployeeHandler)),
-      EmployeeEndpoints.getEmployees.implementHandler(handler(getEmployeesHandler)),
-      EmployeeEndpoints.getEmployeeById.implementHandler(handler(getEmployeeHandler)),
-      EmployeeEndpoints.updateEmployee.implementHandler(handler(updateEmployeeHandler)),
-      EmployeeEndpoints.deleteEmployee.implementHandler(handler(deleteEmployeeHandler))
+      EmployeeEndpoints.createEmployee.implementHandler(
+        handler(createEmployeeHandler)
+      ),
+      EmployeeEndpoints.getEmployees.implementHandler(
+        handler(getEmployeesHandler)
+      ),
+      EmployeeEndpoints.getEmployeeById.implementHandler(
+        handler(getEmployeeHandler)
+      ),
+      EmployeeEndpoints.updateEmployee.implementHandler(
+        handler(updateEmployeeHandler)
+      ),
+      EmployeeEndpoints.deleteEmployee.implementHandler(
+        handler(deleteEmployeeHandler)
+      )
     )
 
   private val phoneRoutes =
@@ -50,7 +70,9 @@ trait Router
 
   private val employeePhoneRoutes =
     Routes(
-      EmployeePhoneEndpoints.addPhoneToEmployee.implementHandler(handler(addPhoneToEmployeeHandler)),
+      EmployeePhoneEndpoints.addPhoneToEmployee.implementHandler(
+        handler(addPhoneToEmployeeHandler)
+      ),
       EmployeePhoneEndpoints.retrieveEmployeePhones.implementHandler(
         handler(retrieveEmployeePhonesHandler)
       ),

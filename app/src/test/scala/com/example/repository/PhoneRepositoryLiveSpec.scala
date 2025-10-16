@@ -1,6 +1,7 @@
 package com.example.repository
 
-import com.example.domain.{Phone, PhoneId, PhoneNumber}
+import com.example.domain.Phone
+import com.example.domain.PhoneId
 import com.example.repository.testutils.TestContainerSupport
 import io.github.iltotore.iron.*
 import zio.*

@@ -8,7 +8,12 @@ import zio.test.*
 
 object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
 
-  val testLayer: ZLayer[Any, Throwable, EmployeePhoneRepository & PhoneRepository & EmployeeRepository & DepartmentRepository] =
+  val testLayer: ZLayer[
+    Any,
+    Throwable,
+    EmployeePhoneRepository & PhoneRepository & EmployeeRepository &
+      DepartmentRepository
+  ] =
     TestContainerSupport.testDbLayer >>> (
       EmployeePhoneRepositoryLive.layer ++
         PhoneRepositoryLive.layer ++
@@ -25,12 +30,16 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phoneRepo <- ZIO.service[PhoneRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
-          departmentId <- deptRepo.create(Department(name = "Engineering".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "John Doe".refine,
-            age = Age(30),
-            departmentId = departmentId
-          ))
+          departmentId <- deptRepo.create(
+            Department(name = "Engineering".refine)
+          )
+          employeeId <- empRepo.create(
+            Employee(
+              name = "John Doe".refine,
+              age = Age(30),
+              departmentId = departmentId
+            )
+          )
           phoneId <- phoneRepo.create(Phone(number = "1234567890".refine))
           // Add phone to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phoneId, employeeId)
@@ -50,11 +59,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department and employee without phones
           departmentId <- deptRepo.create(Department(name = "Sales".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Jane Smith".refine,
-            age = Age(28),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Jane Smith".refine,
+              age = Age(28),
+              departmentId = departmentId
+            )
+          )
           phones <- empPhoneRepo.retrieveEmployeePhones(employeeId)
         } yield assertTrue(phones.isEmpty)
       },
@@ -66,11 +77,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and multiple phones
           departmentId <- deptRepo.create(Department(name = "IT".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Alice Johnson".refine,
-            age = Age(35),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Alice Johnson".refine,
+              age = Age(35),
+              departmentId = departmentId
+            )
+          )
           phone1Id <- phoneRepo.create(Phone(number = "1111111111".refine))
           phone2Id <- phoneRepo.create(Phone(number = "2222222222".refine))
           phone3Id <- phoneRepo.create(Phone(number = "3333333333".refine))
@@ -84,7 +97,11 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phone3 <- phoneRepo.retrieve(phone3Id)
         } yield assertTrue(
           phones.size == 3,
-          phones.map(_.number).toSet == Set(phone1.get.number, phone2.get.number, phone3.get.number)
+          phones.map(_.number).toSet == Set(
+            phone1.get.number,
+            phone2.get.number,
+            phone3.get.number
+          )
         )
       }
     ),
@@ -97,11 +114,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phones
           departmentId <- deptRepo.create(Department(name = "HR".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Bob Williams".refine,
-            age = Age(40),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Bob Williams".refine,
+              age = Age(40),
+              departmentId = departmentId
+            )
+          )
           phone1Id <- phoneRepo.create(Phone(number = "4444444444".refine))
           phone2Id <- phoneRepo.create(Phone(number = "5555555555".refine))
           // Add phones to employee
@@ -124,11 +143,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
           departmentId <- deptRepo.create(Department(name = "Legal".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Charlie Brown".refine,
-            age = Age(32),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Charlie Brown".refine,
+              age = Age(32),
+              departmentId = departmentId
+            )
+          )
           phoneId <- phoneRepo.create(Phone(number = "6666666666".refine))
           // Remove phone that was never added
           _ <- empPhoneRepo.removePhoneFromEmployee(phoneId, employeeId)
@@ -145,11 +166,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
           departmentId <- deptRepo.create(Department(name = "Marketing".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Diana Prince".refine,
-            age = Age(29),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Diana Prince".refine,
+              age = Age(29),
+              departmentId = departmentId
+            )
+          )
           phoneId <- phoneRepo.create(Phone(number = "7777777777".refine))
           // Add phone to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phoneId, employeeId)
@@ -171,11 +194,13 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phones
           departmentId <- deptRepo.create(Department(name = "Finance".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Eve Davis".refine,
-            age = Age(33),
-            departmentId = departmentId
-          ))
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Eve Davis".refine,
+              age = Age(33),
+              departmentId = departmentId
+            )
+          )
           phone1Id <- phoneRepo.create(Phone(number = "8888888888".refine))
           phone2Id <- phoneRepo.create(Phone(number = "9999999999".refine))
           // Add phones to employee
@@ -191,19 +216,25 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phones.head.number == phone2.get.number
         )
       },
-      test("should cascade delete all associations when department is deleted") {
+      test(
+        "should cascade delete all associations when department is deleted"
+      ) {
         for {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           phoneRepo <- ZIO.service[PhoneRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
-          departmentId <- deptRepo.create(Department(name = "Operations".refine))
-          employeeId <- empRepo.create(Employee(
-            name = "Frank Miller".refine,
-            age = Age(45),
-            departmentId = departmentId
-          ))
+          departmentId <- deptRepo.create(
+            Department(name = "Operations".refine)
+          )
+          employeeId <- empRepo.create(
+            Employee(
+              name = "Frank Miller".refine,
+              age = Age(45),
+              departmentId = departmentId
+            )
+          )
           phoneId <- phoneRepo.create(Phone(number = "1010101010".refine))
           // Add phone to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phoneId, employeeId)

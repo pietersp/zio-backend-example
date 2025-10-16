@@ -1,6 +1,7 @@
 package com.example.repository
 
-import com.example.domain.{Department, DepartmentId, DepartmentName}
+import com.example.domain.Department
+import com.example.domain.DepartmentId
 import com.example.repository.testutils.TestContainerSupport
 import io.github.iltotore.iron.*
 import zio.*

@@ -1,6 +1,16 @@
 package com.example.service
 
-import com.example.domain.{Age, Department, DepartmentId, DepartmentIdDescription, DepartmentName, Employee, EmployeeId, EmployeeIdDescription, EmployeeName}
+import com.example.domain.{
+  Age,
+  Department,
+  DepartmentId,
+  DepartmentIdDescription,
+  DepartmentName,
+  Employee,
+  EmployeeId,
+  EmployeeIdDescription,
+  EmployeeName
+}
 import com.example.error.AppError.{DepartmentNotFound, EmployeeNotFound}
 import com.example.repository.{DepartmentRepository, EmployeeRepository}
 import io.github.iltotore.iron.*
@@ -67,7 +77,10 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
     override def retrieveAll: UIO[Vector[Department]] =
       departments.get.map(_.values.toVector)
 
-    override def update(departmentId: DepartmentId, department: Department): UIO[Unit] =
+    override def update(
+      departmentId: DepartmentId,
+      department: Department
+    ): UIO[Unit] =
       departments.update(_.updated(departmentId, department))
 
     override def delete(departmentId: DepartmentId): UIO[Unit] =
@@ -83,7 +96,9 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
         } yield InMemoryDepartmentRepository(departments, nextId)
       }
 
-    def withDepartments(deps: (DepartmentId, Department)*): ZLayer[Any, Nothing, DepartmentRepository] =
+    def withDepartments(
+      deps: (DepartmentId, Department)*
+    ): ZLayer[Any, Nothing, DepartmentRepository] =
       ZLayer {
         for {
           departments <- Ref.make(deps.toMap)
@@ -120,11 +135,12 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
       }.provide(
         InMemoryEmployeeRepository.layer,
         InMemoryDepartmentRepository.withDepartments(
-          1.refineUnsafe[DepartmentIdDescription] -> Department(DepartmentName("Engineering"))
+          1.refineUnsafe[DepartmentIdDescription] -> Department(
+            DepartmentName("Engineering")
+          )
         ),
         EmployeeServiceLive.layer
       ),
-
       test("should fail to create employee when department does not exist") {
         val employee = Employee(
           name = EmployeeName("JaneDoe"),
@@ -137,13 +153,13 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
           result <- service.create(employee).exit
         } yield assertTrue(result.isFailure) && assertTrue(
           result match {
-            case Exit.Failure(cause) => cause.failureOption.contains(DepartmentNotFound)
+            case Exit.Failure(cause) =>
+              cause.failureOption.contains(DepartmentNotFound)
             case _ => false
           }
         )
       }.provide(testLayer)
     ),
-
     suite("retrieveAll")(
       test("should return empty vector when no employees exist") {
         for {
@@ -151,7 +167,6 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
           employees <- service.retrieveAll
         } yield assertTrue(employees.isEmpty)
       }.provide(testLayer),
-
       test("should return all employees") {
         val department = Department(DepartmentName("Engineering"))
         val employee1 = Employee(
@@ -178,12 +193,13 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
       }.provide(
         InMemoryEmployeeRepository.layer,
         InMemoryDepartmentRepository.withDepartments(
-          1.refineUnsafe[DepartmentIdDescription] -> Department(DepartmentName("Engineering"))
+          1.refineUnsafe[DepartmentIdDescription] -> Department(
+            DepartmentName("Engineering")
+          )
         ),
         EmployeeServiceLive.layer
       )
     ),
-
     suite("retrieveById")(
       test("should retrieve employee by id") {
         val employee = Employee(
@@ -203,24 +219,27 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
       }.provide(
         InMemoryEmployeeRepository.layer,
         InMemoryDepartmentRepository.withDepartments(
-          1.refineUnsafe[DepartmentIdDescription] -> Department(DepartmentName("Engineering"))
+          1.refineUnsafe[DepartmentIdDescription] -> Department(
+            DepartmentName("Engineering")
+          )
         ),
         EmployeeServiceLive.layer
       ),
-
       test("should fail when employee does not exist") {
         for {
           service <- ZIO.service[EmployeeService]
-          result <- service.retrieveById(999.refineUnsafe[EmployeeIdDescription]).exit
+          result <- service
+            .retrieveById(999.refineUnsafe[EmployeeIdDescription])
+            .exit
         } yield assertTrue(result.isFailure) && assertTrue(
           result match {
-            case Exit.Failure(cause) => cause.failureOption.contains(EmployeeNotFound)
+            case Exit.Failure(cause) =>
+              cause.failureOption.contains(EmployeeNotFound)
             case _ => false
           }
         )
       }.provide(testLayer)
     ),
-
     suite("update")(
       test("should update existing employee") {
         val originalEmployee = Employee(
@@ -246,11 +265,12 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
       }.provide(
         InMemoryEmployeeRepository.layer,
         InMemoryDepartmentRepository.withDepartments(
-          1.refineUnsafe[DepartmentIdDescription] -> Department(DepartmentName("Engineering"))
+          1.refineUnsafe[DepartmentIdDescription] -> Department(
+            DepartmentName("Engineering")
+          )
         ),
         EmployeeServiceLive.layer
       ),
-
       test("should fail when updating non-existent employee") {
         val employee = Employee(
           name = EmployeeName("Eve"),
@@ -260,16 +280,18 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
 
         for {
           service <- ZIO.service[EmployeeService]
-          result <- service.update(999.refineUnsafe[EmployeeIdDescription], employee).exit
+          result <- service
+            .update(999.refineUnsafe[EmployeeIdDescription], employee)
+            .exit
         } yield assertTrue(result.isFailure) && assertTrue(
           result match {
-            case Exit.Failure(cause) => cause.failureOption.contains(EmployeeNotFound)
+            case Exit.Failure(cause) =>
+              cause.failureOption.contains(EmployeeNotFound)
             case _ => false
           }
         )
       }.provide(testLayer)
     ),
-
     suite("delete")(
       test("should delete existing employee") {
         val employee = Employee(
@@ -285,18 +307,20 @@ object EmployeeServiceSpec extends ZIOSpecDefault {
           result <- service.retrieveById(employeeId).exit
         } yield assertTrue(result.isFailure) && assertTrue(
           result match {
-            case Exit.Failure(cause) => cause.failureOption.contains(EmployeeNotFound)
+            case Exit.Failure(cause) =>
+              cause.failureOption.contains(EmployeeNotFound)
             case _ => false
           }
         )
       }.provide(
         InMemoryEmployeeRepository.layer,
         InMemoryDepartmentRepository.withDepartments(
-          1.refineUnsafe[DepartmentIdDescription] -> Department(DepartmentName("Engineering"))
+          1.refineUnsafe[DepartmentIdDescription] -> Department(
+            DepartmentName("Engineering")
+          )
         ),
         EmployeeServiceLive.layer
       ),
-
       test("should succeed when deleting non-existent employee") {
         for {
           service <- ZIO.service[EmployeeService]

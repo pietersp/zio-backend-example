@@ -41,10 +41,14 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
   object InMemoryEmployeeRepository {
     val layer: ZLayer[Any, Nothing, EmployeeRepository] =
       ZLayer {
-        Ref.make(Map.empty[EmployeeId, Employee]).map(InMemoryEmployeeRepository(_))
+        Ref
+          .make(Map.empty[EmployeeId, Employee])
+          .map(InMemoryEmployeeRepository(_))
       }
 
-    def withEmployees(employees: (EmployeeId, Employee)*): ZLayer[Any, Nothing, EmployeeRepository] =
+    def withEmployees(
+      employees: (EmployeeId, Employee)*
+    ): ZLayer[Any, Nothing, EmployeeRepository] =
       ZLayer {
         Ref.make(employees.toMap).map(InMemoryEmployeeRepository(_))
       }
@@ -65,7 +69,9 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
     override def retrieve(phoneId: PhoneId): UIO[Option[Phone]] =
       phones.get.map(_.get(phoneId))
 
-    override def retrieveByNumber(phoneNumber: PhoneNumber): UIO[Option[Phone]] =
+    override def retrieveByNumber(
+      phoneNumber: PhoneNumber
+    ): UIO[Option[Phone]] =
       phones.get.map(_.values.find(_.number == phoneNumber))
 
     override def update(phoneId: PhoneId, phone: Phone): UIO[Unit] =
@@ -81,7 +87,9 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
         Ref.make(Map.empty[PhoneId, Phone]).map(InMemoryPhoneRepository(_))
       }
 
-    def withPhones(phones: (PhoneId, Phone)*): ZLayer[Any, Nothing, PhoneRepository] =
+    def withPhones(
+      phones: (PhoneId, Phone)*
+    ): ZLayer[Any, Nothing, PhoneRepository] =
       ZLayer {
         Ref.make(phones.toMap).map(InMemoryPhoneRepository(_))
       }
@@ -93,21 +101,31 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
     phoneRepo: PhoneRepository
   ) extends EmployeePhoneRepository {
 
-    override def addPhoneToEmployee(phoneId: PhoneId, employeeId: EmployeeId): UIO[Unit] =
+    override def addPhoneToEmployee(
+      phoneId: PhoneId,
+      employeeId: EmployeeId
+    ): UIO[Unit] =
       employeePhones.update { map =>
         val currentPhones = map.getOrElse(employeeId, Vector.empty)
         map + (employeeId -> (currentPhones :+ phoneId).distinct)
       }
 
-    override def retrieveEmployeePhones(employeeId: EmployeeId): UIO[Vector[Phone]] =
+    override def retrieveEmployeePhones(
+      employeeId: EmployeeId
+    ): UIO[Vector[Phone]] =
       for {
-        phoneIds <- employeePhones.get.map(_.getOrElse(employeeId, Vector.empty))
+        phoneIds <- employeePhones.get.map(
+          _.getOrElse(employeeId, Vector.empty)
+        )
         result <- ZIO.foreach(phoneIds) { phoneId =>
           phoneRepo.retrieve(phoneId).map(_.get) // Assumes phone exists
         }
       } yield result
 
-    override def removePhoneFromEmployee(phoneId: PhoneId, employeeId: EmployeeId): UIO[Unit] =
+    override def removePhoneFromEmployee(
+      phoneId: PhoneId,
+      employeeId: EmployeeId
+    ): UIO[Unit] =
       employeePhones.update { map =>
         val currentPhones = map.getOrElse(employeeId, Vector.empty)
         map + (employeeId -> currentPhones.filterNot(_ == phoneId))
@@ -156,16 +174,21 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           phones.head.number == PhoneNumber("1234567890")
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
-          InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >+>
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
+          InMemoryPhoneRepository.withPhones(
+            1.refineUnsafe[PhoneIdDescription] -> Phone(
+              PhoneNumber("1234567890")
+            )
+          ) >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should fail when phone doesn't exist") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
         val phoneId = 999.refineUnsafe[PhoneIdDescription]
@@ -181,16 +204,17 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           }
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
           InMemoryPhoneRepository.layer >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should fail when employee doesn't exist") {
         val employeeId = 999.refineUnsafe[EmployeeIdDescription]
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
@@ -207,11 +231,14 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(
         InMemoryEmployeeRepository.layer ++
-          InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >+>
+          InMemoryPhoneRepository.withPhones(
+            1.refineUnsafe[PhoneIdDescription] -> Phone(
+              PhoneNumber("1234567890")
+            )
+          ) >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should allow adding multiple phones to same employee") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
         val phoneId1 = 1.refineUnsafe[PhoneIdDescription]
@@ -228,11 +255,13 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           phones.exists(_.number == PhoneNumber("222222"))
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
           InMemoryPhoneRepository.withPhones(
             1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("111111")),
             2.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("222222"))
@@ -241,7 +270,6 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           EmployeePhoneServiceLive.layer
       )
     ),
-
     suite("retrieveEmployeePhones")(
       test("should return empty vector when employee has no phones") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
@@ -251,16 +279,17 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           phones <- service.retrieveEmployeePhones(employeeId)
         } yield assertTrue(phones.isEmpty)
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
           InMemoryPhoneRepository.layer >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should return all phones for an employee") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
 
@@ -273,21 +302,25 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           phones.exists(_.number == PhoneNumber("222222"))
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
           InMemoryPhoneRepository.withPhones(
             1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("111111")),
             2.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("222222"))
           ) >+>
           InMemoryEmployeePhoneRepository.withEmployeePhones(
-            1.refineUnsafe[EmployeeIdDescription] -> Vector(1.refineUnsafe[PhoneIdDescription], 2.refineUnsafe[PhoneIdDescription])
+            1.refineUnsafe[EmployeeIdDescription] -> Vector(
+              1.refineUnsafe[PhoneIdDescription],
+              2.refineUnsafe[PhoneIdDescription]
+            )
           ) >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should fail when employee doesn't exist") {
         val employeeId = 999.refineUnsafe[EmployeeIdDescription]
 
@@ -303,7 +336,6 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(testLayer)
     ),
-
     suite("removePhoneFromEmployee")(
       test("should remove phone from employee successfully") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
@@ -319,18 +351,25 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           phonesAfter.isEmpty
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
-          InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >+>
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
+          InMemoryPhoneRepository.withPhones(
+            1.refineUnsafe[PhoneIdDescription] -> Phone(
+              PhoneNumber("1234567890")
+            )
+          ) >+>
           InMemoryEmployeePhoneRepository.withEmployeePhones(
-            1.refineUnsafe[EmployeeIdDescription] -> Vector(1.refineUnsafe[PhoneIdDescription])
+            1.refineUnsafe[EmployeeIdDescription] -> Vector(
+              1.refineUnsafe[PhoneIdDescription]
+            )
           ) >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should fail when phone doesn't exist") {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
         val phoneId = 999.refineUnsafe[PhoneIdDescription]
@@ -346,16 +385,17 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
           }
         )
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
           InMemoryPhoneRepository.layer >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
       test("should fail when employee doesn't exist") {
         val employeeId = 999.refineUnsafe[EmployeeIdDescription]
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
@@ -372,28 +412,42 @@ object EmployeePhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(
         InMemoryEmployeeRepository.layer ++
-          InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >+>
+          InMemoryPhoneRepository.withPhones(
+            1.refineUnsafe[PhoneIdDescription] -> Phone(
+              PhoneNumber("1234567890")
+            )
+          ) >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       ),
-
-      test("should be idempotent (removing already removed phone doesn't error)") {
+      test(
+        "should be idempotent (removing already removed phone doesn't error)"
+      ) {
         val employeeId = 1.refineUnsafe[EmployeeIdDescription]
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
 
         for {
           service <- ZIO.service[EmployeePhoneService]
           _ <- service.removePhoneFromEmployee(phoneId, employeeId)
-          _ <- service.removePhoneFromEmployee(phoneId, employeeId) // Second removal should not fail
+          _ <- service.removePhoneFromEmployee(
+            phoneId,
+            employeeId
+          ) // Second removal should not fail
           phones <- service.retrieveEmployeePhones(employeeId)
         } yield assertTrue(phones.isEmpty)
       }.provide(
-        InMemoryEmployeeRepository.withEmployees(1.refineUnsafe[EmployeeIdDescription] -> Employee(
-          EmployeeName("JohnDoe"),
-          Age(30),
-          1.refineUnsafe[DepartmentIdDescription]
-        )) ++
-          InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >+>
+        InMemoryEmployeeRepository.withEmployees(
+          1.refineUnsafe[EmployeeIdDescription] -> Employee(
+            EmployeeName("JohnDoe"),
+            Age(30),
+            1.refineUnsafe[DepartmentIdDescription]
+          )
+        ) ++
+          InMemoryPhoneRepository.withPhones(
+            1.refineUnsafe[PhoneIdDescription] -> Phone(
+              PhoneNumber("1234567890")
+            )
+          ) >+>
           InMemoryEmployeePhoneRepository.layer >>>
           EmployeePhoneServiceLive.layer
       )

@@ -25,7 +25,9 @@ object PhoneServiceSpec extends ZIOSpecDefault {
     override def retrieve(phoneId: PhoneId): UIO[Option[Phone]] =
       phones.get.map(_.get(phoneId))
 
-    override def retrieveByNumber(phoneNumber: PhoneNumber): UIO[Option[Phone]] =
+    override def retrieveByNumber(
+      phoneNumber: PhoneNumber
+    ): UIO[Option[Phone]] =
       phones.get.map(_.values.find(_.number == phoneNumber))
 
     override def update(phoneId: PhoneId, phone: Phone): UIO[Unit] =
@@ -44,7 +46,9 @@ object PhoneServiceSpec extends ZIOSpecDefault {
         } yield InMemoryPhoneRepository(phones, nextId)
       }
 
-    def withPhones(phones: (PhoneId, Phone)*): ZLayer[Any, Nothing, PhoneRepository] =
+    def withPhones(
+      phones: (PhoneId, Phone)*
+    ): ZLayer[Any, Nothing, PhoneRepository] =
       ZLayer {
         for {
           phonesRef <- Ref.make(phones.toMap)
@@ -70,7 +74,6 @@ object PhoneServiceSpec extends ZIOSpecDefault {
           retrieved.number == phone.number
         )
       }.provide(testLayer),
-
       test("should fail when phone number already exists") {
         val existingPhone = Phone(PhoneNumber("1234567890"))
         val duplicatePhone = Phone(PhoneNumber("1234567890"))
@@ -87,7 +90,6 @@ object PhoneServiceSpec extends ZIOSpecDefault {
           }
         )
       }.provide(testLayer),
-
       test("should allow creating multiple phones with different numbers") {
         val phone1 = Phone(PhoneNumber("111111"))
         val phone2 = Phone(PhoneNumber("222222"))
@@ -105,7 +107,6 @@ object PhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(testLayer)
     ),
-
     suite("retrieveById")(
       test("should retrieve phone by ID when it exists") {
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
@@ -118,10 +119,11 @@ object PhoneServiceSpec extends ZIOSpecDefault {
           retrieved.number == phone.number
         )
       }.provide(
-        InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >>> 
+        InMemoryPhoneRepository.withPhones(
+          1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))
+        ) >>>
           PhoneServiceLive.layer
       ),
-
       test("should fail when phone doesn't exist") {
         val phoneId = 999.refineUnsafe[PhoneIdDescription]
 
@@ -137,7 +139,6 @@ object PhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(testLayer)
     ),
-
     suite("update")(
       test("should update existing phone") {
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
@@ -152,10 +153,11 @@ object PhoneServiceSpec extends ZIOSpecDefault {
           retrieved.number == updatedPhone.number
         )
       }.provide(
-        InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("111111"))) >>> 
+        InMemoryPhoneRepository.withPhones(
+          1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("111111"))
+        ) >>>
           PhoneServiceLive.layer
       ),
-
       test("should fail to update non-existent phone") {
         val phoneId = 999.refineUnsafe[PhoneIdDescription]
         val phone = Phone(PhoneNumber("1234567890"))
@@ -172,7 +174,6 @@ object PhoneServiceSpec extends ZIOSpecDefault {
         )
       }.provide(testLayer)
     ),
-
     suite("delete")(
       test("should delete phone successfully") {
         val phoneId = 1.refineUnsafe[PhoneIdDescription]
@@ -184,10 +185,11 @@ object PhoneServiceSpec extends ZIOSpecDefault {
           result <- service.retrieveById(phoneId).exit
         } yield assertTrue(result.isFailure)
       }.provide(
-        InMemoryPhoneRepository.withPhones(1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))) >>> 
+        InMemoryPhoneRepository.withPhones(
+          1.refineUnsafe[PhoneIdDescription] -> Phone(PhoneNumber("1234567890"))
+        ) >>>
           PhoneServiceLive.layer
       ),
-
       test("should be idempotent (deleting non-existent phone doesn't error)") {
         val phoneId = 999.refineUnsafe[PhoneIdDescription]
 

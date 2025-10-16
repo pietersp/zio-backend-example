@@ -1,6 +1,9 @@
 package com.example.repository
 
-import com.example.domain.{Age, Department, DepartmentId, Employee, EmployeeId, EmployeeName}
+import com.example.domain.Age
+import com.example.domain.Department
+import com.example.domain.Employee
+import com.example.domain.EmployeeId
 import com.example.repository.testutils.TestContainerSupport
 import io.github.iltotore.iron.*
 import zio.*
@@ -8,7 +11,8 @@ import zio.test.*
 
 object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
 
-  val testLayer: ZLayer[Any, Throwable, EmployeeRepository & DepartmentRepository] =
+  val testLayer
+    : ZLayer[Any, Throwable, EmployeeRepository & DepartmentRepository] =
     TestContainerSupport.testDbLayer >>> (EmployeeRepositoryLive.layer ++ DepartmentRepositoryLive.layer)
 
   def spec = suite("EmployeeRepositoryLiveSpec")(
@@ -79,8 +83,16 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           dept1Id <- deptRepo.create(Department(name = "IT".refine))
           dept2Id <- deptRepo.create(Department(name = "HR".refine))
           // Create employees
-          emp1 = Employee(name = "Alice".refine, age = Age(25), departmentId = dept1Id)
-          emp2 = Employee(name = "Bob".refine, age = Age(35), departmentId = dept2Id)
+          emp1 = Employee(
+            name = "Alice".refine,
+            age = Age(25),
+            departmentId = dept1Id
+          )
+          emp2 = Employee(
+            name = "Bob".refine,
+            age = Age(35),
+            departmentId = dept2Id
+          )
           _ <- empRepo.create(emp1)
           _ <- empRepo.create(emp2)
           all <- empRepo.retrieveAll
@@ -164,17 +176,23 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department and employees
-          departmentId <- deptRepo.create(Department(name = "Operations".refine))
-          emp1Id <- empRepo.create(Employee(
-            name = "Employee One".refine,
-            age = Age(30),
-            departmentId = departmentId
-          ))
-          emp2Id <- empRepo.create(Employee(
-            name = "Employee Two".refine,
-            age = Age(35),
-            departmentId = departmentId
-          ))
+          departmentId <- deptRepo.create(
+            Department(name = "Operations".refine)
+          )
+          emp1Id <- empRepo.create(
+            Employee(
+              name = "Employee One".refine,
+              age = Age(30),
+              departmentId = departmentId
+            )
+          )
+          emp2Id <- empRepo.create(
+            Employee(
+              name = "Employee Two".refine,
+              age = Age(35),
+              departmentId = departmentId
+            )
+          )
           // Delete the department
           _ <- deptRepo.delete(departmentId)
           // Employees should also be deleted due to CASCADE
