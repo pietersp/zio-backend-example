@@ -14,7 +14,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
     TestContainerSupport.testDbLayer >+> DepartmentRepositoryLive.layer
 
   def spec = suite("DepartmentRepositoryLiveSpec")(
-    suite("create")(
+    TestContainerSupport.cleanSuite("create")(
       test("should create a department and return its ID") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -26,8 +26,8 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ) @@ TestContainerSupport.cleanDb,
-    suite("retrieve")(
+    ),
+    TestContainerSupport.cleanSuite("retrieve")(
       test("should return None when department does not exist") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -45,8 +45,8 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ) @@ TestContainerSupport.cleanDb,
-    suite("retrieveByName")(
+    ),
+    TestContainerSupport.cleanSuite("retrieveByName")(
       test("should return None when department with name does not exist") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -64,8 +64,8 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ) @@ TestContainerSupport.cleanDb,
-    suite("retrieveAll")(
+    ),
+    TestContainerSupport.cleanSuite("retrieveAll")(
       test("should return empty vector when no departments exist") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -85,8 +85,8 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           all.map(_.name).toSet == Set(dept1.name, dept2.name)
         )
       }
-    ) @@ TestContainerSupport.cleanDb,
-    suite("update")(
+    ),
+    TestContainerSupport.cleanSuite("update")(
       test("should update an existing department") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -108,8 +108,8 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved <- repo.retrieve(DepartmentId(9999))
         } yield assertTrue(retrieved.isEmpty)
       }
-    ) @@ TestContainerSupport.cleanDb,
-    suite("delete")(
+    ),
+    TestContainerSupport.cleanSuite("delete")(
       test("should delete an existing department") {
         for {
           repo <- ZIO.service[DepartmentRepository]
@@ -126,6 +126,6 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           _ <- repo.delete(DepartmentId(9999))
         } yield assertTrue(true)
       }
-    ) @@ TestContainerSupport.cleanDb
+    )
   ).provideShared(testLayer) @@ TestAspect.sequential
 }

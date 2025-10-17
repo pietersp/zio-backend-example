@@ -5,7 +5,7 @@ import com.example.tables
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import org.testcontainers.containers.PostgreSQLContainer
 import zio.*
-import zio.test.TestAspect
+import zio.test.{Spec, TestAspect, suite}
 
 object TestContainerSupport {
 
@@ -110,6 +110,10 @@ object TestContainerSupport {
   /** A ZIO Test aspect that cleans the database before each test */
   val cleanDb: TestAspect[Nothing, Transactor, Throwable, Any] = 
     TestAspect.before(ZIO.serviceWithZIO[Transactor](xa => cleanupTables(xa)))
+
+  /** A helper function to create a suite that is cleaned before execution */
+  def cleanSuite[R <: Transactor, E](label: String)(specs: Spec[R, E]*): Spec[R, E | Throwable] =
+    suite(label)(specs: _*) @@ cleanDb
 
   /** Creates a test database layer with testcontainer and schema setup */
   val testDbLayer: ZLayer[Any, Throwable, Transactor] = {
