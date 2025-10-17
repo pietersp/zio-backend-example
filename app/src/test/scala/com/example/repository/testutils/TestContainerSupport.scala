@@ -5,6 +5,7 @@ import com.example.tables
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import org.testcontainers.containers.PostgreSQLContainer
 import zio.*
+import zio.test.TestAspect
 
 object TestContainerSupport {
 
@@ -92,6 +93,23 @@ object TestContainerSupport {
       phoneTable.update.run()
       employeePhoneTable.update.run()
     }
+
+  /** Truncates all tables to leave a clean state for the next test */
+  def cleanupTables(xa: Transactor): Task[Unit] =
+    xa.transact(
+      sql"""
+         TRUNCATE TABLE
+           ${tables.EmployeePhone.table},
+           ${tables.Employee.table},
+           ${tables.Phone.table},
+           ${tables.Department.table}
+         RESTART IDENTITY CASCADE
+       """.update.run()
+    )
+
+  /** A ZIO Test aspect that cleans the database before each test */
+  val cleanDb: TestAspect[Nothing, Transactor, Throwable, Any] = 
+    TestAspect.before(ZIO.serviceWithZIO[Transactor](xa => cleanupTables(xa)))
 
   /** Creates a test database layer with testcontainer and schema setup */
   val testDbLayer: ZLayer[Any, Throwable, Transactor] = {

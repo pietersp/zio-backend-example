@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.augustnagro.magnum.magzio.Transactor
 import com.example.domain.Department
 import com.example.domain.DepartmentId
 import com.example.repository.testutils.TestContainerSupport
@@ -9,8 +10,8 @@ import zio.test.*
 
 object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
 
-  val testLayer: ZLayer[Any, Throwable, DepartmentRepository] =
-    TestContainerSupport.testDbLayer >>> DepartmentRepositoryLive.layer
+  val testLayer: ZLayer[Any, Throwable, DepartmentRepository & Transactor] =
+    TestContainerSupport.testDbLayer >+> DepartmentRepositoryLive.layer
 
   def spec = suite("DepartmentRepositoryLiveSpec")(
     suite("create")(
@@ -25,7 +26,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ),
+    ) @@ TestContainerSupport.cleanDb,
     suite("retrieve")(
       test("should return None when department does not exist") {
         for {
@@ -44,7 +45,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ),
+    ) @@ TestContainerSupport.cleanDb,
     suite("retrieveByName")(
       test("should return None when department with name does not exist") {
         for {
@@ -63,7 +64,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved.get.name == department.name
         )
       }
-    ),
+    ) @@ TestContainerSupport.cleanDb,
     suite("retrieveAll")(
       test("should return empty vector when no departments exist") {
         for {
@@ -84,7 +85,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           all.map(_.name).toSet == Set(dept1.name, dept2.name)
         )
       }
-    ),
+    ) @@ TestContainerSupport.cleanDb,
     suite("update")(
       test("should update an existing department") {
         for {
@@ -107,7 +108,7 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           retrieved <- repo.retrieve(DepartmentId(9999))
         } yield assertTrue(retrieved.isEmpty)
       }
-    ),
+    ) @@ TestContainerSupport.cleanDb,
     suite("delete")(
       test("should delete an existing department") {
         for {
@@ -125,6 +126,6 @@ object DepartmentRepositoryLiveSpec extends ZIOSpecDefault {
           _ <- repo.delete(DepartmentId(9999))
         } yield assertTrue(true)
       }
-    )
-  ).provide(testLayer) @@ TestAspect.sequential
+    ) @@ TestContainerSupport.cleanDb
+  ).provideShared(testLayer) @@ TestAspect.sequential
 }
