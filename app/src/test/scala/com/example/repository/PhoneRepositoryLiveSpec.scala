@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.augustnagro.magnum.magzio.Transactor
 import com.example.domain.Phone
 import com.example.domain.PhoneId
 import com.example.repository.testutils.TestContainerSupport
@@ -9,10 +10,11 @@ import zio.test.*
 
 object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
 
-  val testLayer: ZLayer[Any, Throwable, PhoneRepository] =
-    TestContainerSupport.testDbLayer >>> PhoneRepositoryLive.layer
+  val testLayer: ZLayer[Any, Throwable, Transactor & PhoneRepository] =
+    TestContainerSupport.testDbLayer >+> PhoneRepositoryLive.layer
 
-  def spec = suite("PhoneRepositoryLiveSpec")(
+  def spec = tests.provideShared(testLayer) @@ TestAspect.sequential
+  private val tests = suite("PhoneRepositoryLiveSpec")(
     suite("create")(
       test("should create a phone and return its ID") {
         for {
@@ -105,5 +107,5 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
         } yield assertTrue(true)
       }
     )
-  ).provide(testLayer) @@ TestAspect.sequential
+  )
 }

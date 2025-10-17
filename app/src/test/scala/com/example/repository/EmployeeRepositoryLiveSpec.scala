@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.augustnagro.magnum.magzio.Transactor
 import com.example.domain.Age
 import com.example.domain.Department
 import com.example.domain.Employee
@@ -12,10 +13,11 @@ import zio.test.*
 object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
 
   val testLayer
-    : ZLayer[Any, Throwable, EmployeeRepository & DepartmentRepository] =
-    TestContainerSupport.testDbLayer >>> (EmployeeRepositoryLive.layer ++ DepartmentRepositoryLive.layer)
+    : ZLayer[Any, Throwable, Transactor & EmployeeRepository & DepartmentRepository] =
+    TestContainerSupport.testDbLayer >+> (EmployeeRepositoryLive.layer ++ DepartmentRepositoryLive.layer)
 
-  def spec = suite("EmployeeRepositoryLiveSpec")(
+  def spec = tests.provideShared(testLayer) @@ TestAspect.sequential
+  private val tests = suite("EmployeeRepositoryLiveSpec")(
     suite("create")(
       test("should create an employee and return its ID") {
         for {
@@ -204,5 +206,5 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
         )
       }
     )
-  ).provide(testLayer) @@ TestAspect.sequential
+  ) @@ TestContainerSupport.cleanDb
 }

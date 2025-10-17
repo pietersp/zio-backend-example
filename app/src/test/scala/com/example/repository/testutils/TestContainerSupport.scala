@@ -111,10 +111,6 @@ object TestContainerSupport {
   val cleanDb: TestAspect[Nothing, Transactor, Throwable, Any] = 
     TestAspect.before(ZIO.serviceWithZIO[Transactor](xa => cleanupTables(xa)))
 
-  /** A helper function to create a suite that is cleaned before execution */
-  def cleanSuite[R <: Transactor, E](label: String)(specs: Spec[R, E]*): Spec[R, E | Throwable] =
-    suite(label)(specs: _*) @@ cleanDb
-
   /** Creates a test database layer with testcontainer and schema setup */
   val testDbLayer: ZLayer[Any, Throwable, Transactor] = {
     val dataSourceLayer = ZLayer.scoped {
