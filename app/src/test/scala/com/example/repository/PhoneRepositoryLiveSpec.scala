@@ -19,7 +19,7 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should create a phone and return its ID") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "1234567890".refine)
+          phone = Phone(number = "1234567890".refineUnsafe)
           phoneId <- repo.create(phone)
           retrieved <- repo.retrieve(phoneId)
         } yield assertTrue(
@@ -38,7 +38,7 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should retrieve an existing phone by ID") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "9876543210".refine)
+          phone = Phone(number = "9876543210".refineUnsafe)
           phoneId <- repo.create(phone)
           retrieved <- repo.retrieve(phoneId)
         } yield assertTrue(
@@ -51,13 +51,13 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should return None when phone with number does not exist") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          retrieved <- repo.retrieveByNumber("0000000000".refine)
+          retrieved <- repo.retrieveByNumber("0000000000".refineUnsafe)
         } yield assertTrue(retrieved.isEmpty)
       },
       test("should retrieve a phone by number") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "5555555555".refine)
+          phone = Phone(number = "5555555555".refineUnsafe)
           phoneId <- repo.create(phone)
           retrieved <- repo.retrieveByNumber(phone.number)
         } yield assertTrue(
@@ -70,9 +70,9 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should update an existing phone") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "1111111111".refine)
+          phone = Phone(number = "1111111111".refineUnsafe)
           phoneId <- repo.create(phone)
-          updatedPhone = Phone(number = "2222222222".refine)
+          updatedPhone = Phone(number = "2222222222".refineUnsafe)
           _ <- repo.update(phoneId, updatedPhone)
           retrieved <- repo.retrieve(phoneId)
         } yield assertTrue(
@@ -83,7 +83,7 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should handle update of non-existent phone gracefully") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "9999999999".refine)
+          phone = Phone(number = "9999999999".refineUnsafe)
           _ <- repo.update(PhoneId(9999), phone)
           retrieved <- repo.retrieve(PhoneId(9999))
         } yield assertTrue(retrieved.isEmpty)
@@ -93,7 +93,7 @@ object PhoneRepositoryLiveSpec extends ZIOSpecDefault {
       test("should delete an existing phone") {
         for {
           repo <- ZIO.service[PhoneRepository]
-          phone = Phone(number = "3333333333".refine)
+          phone = Phone(number = "3333333333".refineUnsafe)
           phoneId <- repo.create(phone)
           _ <- repo.delete(phoneId)
           retrieved <- repo.retrieve(phoneId)

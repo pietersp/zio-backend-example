@@ -5,7 +5,7 @@ import com.example.tables
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import org.testcontainers.containers.PostgreSQLContainer
 import zio.*
-import zio.test.{Spec, TestAspect, suite}
+import zio.test.TestAspect
 
 object TestContainerSupport {
 

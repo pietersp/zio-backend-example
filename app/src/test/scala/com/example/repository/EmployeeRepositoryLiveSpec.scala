@@ -24,11 +24,11 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create a department first
-          department = Department(name = "Engineering".refine)
+          department = Department(name = "Engineering".refineUnsafe)
           departmentId <- deptRepo.create(department)
           // Create employee
           employee = Employee(
-            name = "John Doe".refine,
+            name = "John Doe".refineUnsafe,
             age = Age(30),
             departmentId = departmentId
           )
@@ -54,11 +54,11 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create a department first
-          department = Department(name = "Sales".refine)
+          department = Department(name = "Sales".refineUnsafe)
           departmentId <- deptRepo.create(department)
           // Create employee
           employee = Employee(
-            name = "Jane Smith".refine,
+            name = "Jane Smith".refineUnsafe,
             age = Age(28),
             departmentId = departmentId
           )
@@ -82,16 +82,16 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create departments
-          dept1Id <- deptRepo.create(Department(name = "IT".refine))
-          dept2Id <- deptRepo.create(Department(name = "HR".refine))
+          dept1Id <- deptRepo.create(Department(name = "IT".refineUnsafe))
+          dept2Id <- deptRepo.create(Department(name = "HR".refineUnsafe))
           // Create employees
           emp1 = Employee(
-            name = "Alice".refine,
+            name = "Alice".refineUnsafe,
             age = Age(25),
             departmentId = dept1Id
           )
           emp2 = Employee(
-            name = "Bob".refine,
+            name = "Bob".refineUnsafe,
             age = Age(35),
             departmentId = dept2Id
           )
@@ -110,17 +110,17 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department
-          departmentId <- deptRepo.create(Department(name = "Legal".refine))
+          departmentId <- deptRepo.create(Department(name = "Legal".refineUnsafe))
           // Create employee
           employee = Employee(
-            name = "Charlie Brown".refine,
+            name = "Charlie Brown".refineUnsafe,
             age = Age(40),
             departmentId = departmentId
           )
           employeeId <- empRepo.create(employee)
           // Update employee
           updatedEmployee = Employee(
-            name = "Charlie B. Brown".refine,
+            name = "Charlie B. Brown".refineUnsafe,
             age = Age(41),
             departmentId = departmentId
           )
@@ -136,9 +136,9 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
         for {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
-          departmentId <- deptRepo.create(Department(name = "Marketing".refine))
+          departmentId <- deptRepo.create(Department(name = "Marketing".refineUnsafe))
           employee = Employee(
-            name = "Ghost Employee".refine,
+            name = "Ghost Employee".refineUnsafe,
             age = Age(99),
             departmentId = departmentId
           )
@@ -153,9 +153,9 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department and employee
-          departmentId <- deptRepo.create(Department(name = "Finance".refine))
+          departmentId <- deptRepo.create(Department(name = "Finance".refineUnsafe))
           employee = Employee(
-            name = "Diana Prince".refine,
+            name = "Diana Prince".refineUnsafe,
             age = Age(32),
             departmentId = departmentId
           )
@@ -179,18 +179,18 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department and employees
           departmentId <- deptRepo.create(
-            Department(name = "Operations".refine)
+            Department(name = "Operations".refineUnsafe)
           )
           emp1Id <- empRepo.create(
             Employee(
-              name = "Employee One".refine,
+              name = "Employee One".refineUnsafe,
               age = Age(30),
               departmentId = departmentId
             )
           )
           emp2Id <- empRepo.create(
             Employee(
-              name = "Employee Two".refine,
+              name = "Employee Two".refineUnsafe,
               age = Age(35),
               departmentId = departmentId
             )
