@@ -108,7 +108,7 @@ object TestContainerSupport {
     )
 
   /** A ZIO Test aspect that cleans the database before each test */
-  val cleanDb: TestAspect[Nothing, Transactor, Throwable, Any] = 
+  val cleanDb: TestAspect[Nothing, Transactor, Throwable, Any] =
     TestAspect.before(ZIO.serviceWithZIO[Transactor](xa => cleanupTables(xa)))
 
   /** Creates a test database layer with testcontainer and schema setup */

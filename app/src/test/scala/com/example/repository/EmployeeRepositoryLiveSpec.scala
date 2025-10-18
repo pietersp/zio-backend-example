@@ -12,8 +12,11 @@ import zio.test.*
 
 object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
 
-  val testLayer
-    : ZLayer[Any, Throwable, Transactor & EmployeeRepository & DepartmentRepository] =
+  val testLayer: ZLayer[
+    Any,
+    Throwable,
+    Transactor & EmployeeRepository & DepartmentRepository
+  ] =
     TestContainerSupport.testDbLayer >+> (EmployeeRepositoryLive.layer ++ DepartmentRepositoryLive.layer)
 
   def spec = tests.provideShared(testLayer) @@ TestAspect.sequential
@@ -110,7 +113,9 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department
-          departmentId <- deptRepo.create(Department(name = "Legal".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Legal".refineUnsafe)
+          )
           // Create employee
           employee = Employee(
             name = "Charlie Brown".refineUnsafe,
@@ -136,7 +141,9 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
         for {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
-          departmentId <- deptRepo.create(Department(name = "Marketing".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Marketing".refineUnsafe)
+          )
           employee = Employee(
             name = "Ghost Employee".refineUnsafe,
             age = Age(99),
@@ -153,7 +160,9 @@ object EmployeeRepositoryLiveSpec extends ZIOSpecDefault {
           deptRepo <- ZIO.service[DepartmentRepository]
           empRepo <- ZIO.service[EmployeeRepository]
           // Create department and employee
-          departmentId <- deptRepo.create(Department(name = "Finance".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Finance".refineUnsafe)
+          )
           employee = Employee(
             name = "Diana Prince".refineUnsafe,
             age = Age(32),

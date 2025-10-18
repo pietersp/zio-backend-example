@@ -12,8 +12,8 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
   val testLayer: ZLayer[
     Any,
     Throwable,
-    Transactor & EmployeePhoneRepository & PhoneRepository & EmployeeRepository &
-      DepartmentRepository
+    Transactor & EmployeePhoneRepository & PhoneRepository &
+      EmployeeRepository & DepartmentRepository
   ] =
     TestContainerSupport.testDbLayer >+> (
       EmployeePhoneRepositoryLive.layer ++
@@ -61,7 +61,9 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           empRepo <- ZIO.service[EmployeeRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department and employee without phones
-          departmentId <- deptRepo.create(Department(name = "Sales".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Sales".refineUnsafe)
+          )
           employeeId <- empRepo.create(
             Employee(
               name = "Jane Smith".refineUnsafe,
@@ -87,9 +89,15 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
               departmentId = departmentId
             )
           )
-          phone1Id <- phoneRepo.create(Phone(number = "1111111111".refineUnsafe))
-          phone2Id <- phoneRepo.create(Phone(number = "2222222222".refineUnsafe))
-          phone3Id <- phoneRepo.create(Phone(number = "3333333333".refineUnsafe))
+          phone1Id <- phoneRepo.create(
+            Phone(number = "1111111111".refineUnsafe)
+          )
+          phone2Id <- phoneRepo.create(
+            Phone(number = "2222222222".refineUnsafe)
+          )
+          phone3Id <- phoneRepo.create(
+            Phone(number = "3333333333".refineUnsafe)
+          )
           // Add phones to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phone1Id, employeeId)
           _ <- empPhoneRepo.addPhoneToEmployee(phone2Id, employeeId)
@@ -124,8 +132,12 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
               departmentId = departmentId
             )
           )
-          phone1Id <- phoneRepo.create(Phone(number = "4444444444".refineUnsafe))
-          phone2Id <- phoneRepo.create(Phone(number = "5555555555".refineUnsafe))
+          phone1Id <- phoneRepo.create(
+            Phone(number = "4444444444".refineUnsafe)
+          )
+          phone2Id <- phoneRepo.create(
+            Phone(number = "5555555555".refineUnsafe)
+          )
           // Add phones to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phone1Id, employeeId)
           _ <- empPhoneRepo.addPhoneToEmployee(phone2Id, employeeId)
@@ -145,7 +157,9 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phoneRepo <- ZIO.service[PhoneRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
-          departmentId <- deptRepo.create(Department(name = "Legal".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Legal".refineUnsafe)
+          )
           employeeId <- empRepo.create(
             Employee(
               name = "Charlie Brown".refineUnsafe,
@@ -168,7 +182,9 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phoneRepo <- ZIO.service[PhoneRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phone
-          departmentId <- deptRepo.create(Department(name = "Marketing".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Marketing".refineUnsafe)
+          )
           employeeId <- empRepo.create(
             Employee(
               name = "Diana Prince".refineUnsafe,
@@ -196,7 +212,9 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
           phoneRepo <- ZIO.service[PhoneRepository]
           empPhoneRepo <- ZIO.service[EmployeePhoneRepository]
           // Create department, employee, and phones
-          departmentId <- deptRepo.create(Department(name = "Finance".refineUnsafe))
+          departmentId <- deptRepo.create(
+            Department(name = "Finance".refineUnsafe)
+          )
           employeeId <- empRepo.create(
             Employee(
               name = "Eve Davis".refineUnsafe,
@@ -204,8 +222,12 @@ object EmployeePhoneRepositoryLiveSpec extends ZIOSpecDefault {
               departmentId = departmentId
             )
           )
-          phone1Id <- phoneRepo.create(Phone(number = "8888888888".refineUnsafe))
-          phone2Id <- phoneRepo.create(Phone(number = "9999999999".refineUnsafe))
+          phone1Id <- phoneRepo.create(
+            Phone(number = "8888888888".refineUnsafe)
+          )
+          phone2Id <- phoneRepo.create(
+            Phone(number = "9999999999".refineUnsafe)
+          )
           // Add phones to employee
           _ <- empPhoneRepo.addPhoneToEmployee(phone1Id, employeeId)
           _ <- empPhoneRepo.addPhoneToEmployee(phone2Id, employeeId)
