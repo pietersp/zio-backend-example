@@ -14,7 +14,7 @@ import zio.http.codec.*
 import zio.http.endpoint.AuthType.None
 import zio.http.endpoint.Endpoint
 
-trait EmployeePhoneEndpoints extends Codecs {
+object EmployeePhoneEndpoints extends Codecs {
   val addPhoneToEmployee: Endpoint[
     (EmployeeId, PhoneId),
     (EmployeeId, PhoneId),

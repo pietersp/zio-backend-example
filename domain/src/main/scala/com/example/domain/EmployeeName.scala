@@ -5,8 +5,8 @@ import io.github.iltotore.iron.constraint.all.*
 
 type EmployeeNameDescription =
   DescribedAs[
-    Alphanumeric & Not[Empty] & MaxLength[100],
-    "Employee's name should be alphanumeric, non-empty and have a maximum length of 100"
+    Match["^[\\p{L}\\p{M}\\s'.-]+$"] & Not[Empty] & MaxLength[100],
+    "Employee's name should contain only letters, spaces, hyphens, apostrophes, periods and have a maximum length of 100"
   ]
 type EmployeeName = String :| EmployeeNameDescription
 
