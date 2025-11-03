@@ -34,11 +34,14 @@ lazy val app = (project in file("app"))
       // Database
       "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
       "org.postgresql" % "postgresql" % "42.7.6",
-      "org.testcontainers" % "testcontainers" % "1.21.1",
-      "org.testcontainers" % "postgresql" % "1.21.1",
       "com.zaxxer" % "HikariCP" % "6.3.0",
+      // Flyway
+      "org.flywaydb" % "flyway-core" % "11.15.0",
+      "org.flywaydb" % "flyway-database-postgresql" % "11.15.0",
+      // H2 for testing
+      "com.h2database" % "h2" % "2.2.224" % Test,
       // Logging
-      "dev.zio" %% "zio-logging-jul-bridge" % "2.5.0"
+      "ch.qos.logback" % "logback-classic" % "1.5.12"
     ) ++ testDependencies,
     Compile / mainClass := Some("com.example.Main")
   )

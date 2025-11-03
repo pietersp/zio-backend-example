@@ -1,0 +1,42 @@
+# Build artifacts
+target/
+project/target/
+project/project/target/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Scala specific
+.cache/
+.classpath
+.project
+.settings/
+bin/
+
+# SBT specific
+.sbt/
+boot/
+dist/
+
+# Metals (Scala language server)
+.metals/
+.bloop/
