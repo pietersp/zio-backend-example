@@ -20,10 +20,8 @@ object AppConfig {
     // Try environment variables first, then system properties, then defaults
     val url = sys.env.getOrElse("DATABASE_URL",
       sys.props.getOrElse("database.url", "jdbc:postgresql://localhost:5432/zio_backend"))
-    val user = sys.env.getOrElse("DATABASE_USER",
-      sys.props.getOrElse("database.user", "postgres"))
-    val password = sys.env.getOrElse("DATABASE_PASSWORD",
-      sys.props.getOrElse("database.password", "postgres"))
+    val user = sys.env.getOrElse("DATABASE_USER", sys.props.getOrElse("database.user", "postgres"))
+    val password = sys.env.getOrElse("DATABASE_PASSWORD", sys.props.getOrElse("database.password", "postgres"))
 
     DatabaseConfig(url, user, password)
   }

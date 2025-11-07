@@ -37,15 +37,12 @@ case class FlywayServiceLive(flyway: Flyway) extends FlywayService {
     ZIO.logDebug("Starting migration validation") *>
     ZIO.attemptBlocking(flyway.validateWithResult())
       .mapError(ex => {
-        ZIO.logError(s"Validation failed: ${ex.getMessage}")
         FlywayException.ValidationFailedException(List(ex.getMessage))
       })
       .map { result =>
         if (!result.validationSuccessful) {
-          ZIO.logError("Migration validation failed")
           false
         } else {
-          ZIO.logDebug("Migration validation passed")
           true
         }
       }
