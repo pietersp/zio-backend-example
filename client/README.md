@@ -2,19 +2,6 @@
 
 This module provides a comprehensive, type-safe HTTP client for the ZIO backend example API.
 
-## Overview
-
-The client has been completely redesigned with the following improvements:
-
-### Key Features
-
-1. **Complete Coverage**: Supports all API endpoints (Department, Employee, Phone, EmployeePhone)
-2. **Type Safety**: Fully typed with proper error types for each operation
-3. **Proper Configuration**: ZIO Config-based configuration with sensible defaults
-4. **Clean Architecture**: Separation of concerns between client interface and implementation
-5. **Better Error Handling**: Safe URL parsing and proper error propagation
-6. **ZIO Layer Integration**: Easy composition with other ZIO layers
-
 ## Architecture
 
 ### Components
@@ -24,36 +11,6 @@ The client has been completely redesigned with the following improvements:
 - **`ApiClientConfig`**: Configuration case class with multiple layer constructors
 - **`ApiClientExample`**: Complete usage example demonstrating all operations
 
-### Improvements Over Previous Implementation
-
-#### Before
-```scala
-final case class ExampleClient(
-  client: Client,
-  clientConfig: ExampleClient.MyConfig,
-  departmentEndpoints: DepartmentEndpoints  // ❌ Wrong - endpoints aren't dependencies
-)
-```
-
-- Only covered Department endpoints
-- Required endpoint traits as dependencies (incorrect pattern)
-- Unsafe URL parsing with `.get`
-- Repeated `ZIO.scoped` in every method
-- Non-standard config layer structure
-
-#### After
-```scala
-final case class ApiClientLive(
-  client: Client,
-  baseUrl: URL
-) extends ApiClient
-```
-
-- Covers ALL endpoints (Department, Employee, Phone, EmployeePhone)
-- Endpoints are instantiated internally (correct pattern)
-- Safe URL parsing with proper error handling
-- Cleaner executor management
-- Standard ZIO layer patterns
 
 ## Usage
 
@@ -192,11 +149,3 @@ The client module depends on:
 - `domain`: For domain models (Department, Employee, etc.)
 - `endpoints`: For endpoint definitions
 - `zio-http`: For HTTP client capabilities
-
-## Design Decisions
-
-1. **Endpoints as Objects**: Converted from traits to objects since they're stateless definitions
-2. **Comprehensive Interface**: Single trait covering all operations for ease of use
-3. **Executor Reuse**: Centralized executor creation to avoid repetition
-4. **Configuration Flexibility**: Multiple layer constructors for different use cases
-5. **Proper Error Types**: Each operation returns specific error types for type-safe error handling
