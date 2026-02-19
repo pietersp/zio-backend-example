@@ -1,7 +1,0 @@
-{
-    "mcpServers": {
-        "chimp-metals": {
-            "url": "http://localhost:50762/sse"
-        }
-    }
-}
