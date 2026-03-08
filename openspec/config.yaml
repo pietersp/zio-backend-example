@@ -1,0 +1,53 @@
+schema: spec-driven
+
+context: |
+  Project: zio-backend-example
+  Stack: Scala 3.6.4, ZIO 2, ZIO HTTP 3, Iron, Magnum ZIO, PostgreSQL, Flyway, HikariCP.
+
+  Module layout:
+  - domain: shared business entities, refined value types, schemas/codecs, and shared application errors.
+  - endpoints: zio-http endpoint declarations and codecs only; keep transport contracts here.
+  - core: repository interfaces and business services; depends only on domain.
+  - app: server startup, handlers, repository live implementations, database wiring, Flyway, Swagger/OpenAPI.
+  - client: API client built from the shared endpoint/domain contracts.
+
+  Dependency direction:
+  - domain is the bottom layer and must stay free of app/core/client implementation concerns.
+  - endpoints depends on domain.
+  - core depends on domain.
+  - app depends on core, domain, and endpoints.
+  - client depends on domain and endpoints.
+
+  Current business scope:
+  - Departments can be created, listed, fetched by id, updated, and deleted.
+  - Employees can be created, listed, fetched by id, updated, and deleted.
+  - Phones can be created, fetched by id, updated, and deleted.
+  - Employee-phone relationships can be added, listed per employee, and removed.
+  - Swagger UI is generated from zio-http endpoints in app/src/main/scala/com/example/api/Router.scala.
+
+  Persistence and runtime:
+  - PostgreSQL is the primary database.
+  - Flyway SQL migrations live in app/src/main/resources/db/migration.
+  - Database tables currently model department, employee, phone, and employee_phone.
+  - The main app wires repositories/services with ZLayer and runs migrations before serving.
+  - Database connection settings are resolved from environment variables or JVM system properties, with local defaults for development.
+
+  Testing and workflow:
+  - Use ZIO Test across modules.
+  - Core tests focus on service behavior with in-memory or mocked dependencies.
+  - App tests cover Flyway and repository integrations, including H2 and TestContainers support.
+  - Typical local commands: sbt test, sbt core/test, sbt app/test, sbt run, docker-compose up -d.
+
+rules:
+  proposal:
+    - Name the affected sbt module or modules explicitly.
+    - State whether the change affects endpoint contracts, business logic, persistence, or client usage.
+    - Call out API compatibility and database migration impact whenever relevant.
+  design:
+    - Describe how the change preserves the current module boundaries.
+    - Show where endpoint, handler, service, repository, and migration changes belong.
+    - Explain ZLayer wiring, error propagation, and rollout considerations for persistence or API changes.
+  tasks:
+    - Break work down in implementation order by module.
+    - Include tests for the most affected modules.
+    - Include migration, documentation, and client follow-up tasks when applicable.
