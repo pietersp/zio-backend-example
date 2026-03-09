@@ -19,6 +19,7 @@ import com.example.service.{
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import zio.*
 import zio.http.*
+import zio.http.Middleware.cors
 
 object Main extends ZIOAppDefault with Router {
 
@@ -107,7 +108,7 @@ object Main extends ZIOAppDefault with Router {
       config <- ZIO.service[AppConfig]
       _ <- ZIO.logInfo("Starting ZIO Backend application...")
       _ <- ZIO.logInfo(s"Database config: ${config.database}")
-      _ <- Server.serve(routes ++ swaggerRoutes)
+      _ <- Server.serve(routes ++ swaggerRoutes).withMiddleware(CORS.default)
     } yield ()
   }.provide(
     Server.default,
