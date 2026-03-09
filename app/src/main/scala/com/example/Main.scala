@@ -19,7 +19,6 @@ import com.example.service.{
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import zio.*
 import zio.http.*
-import zio.http.Middleware.cors
 
 object Main extends ZIOAppDefault with Router {
 
