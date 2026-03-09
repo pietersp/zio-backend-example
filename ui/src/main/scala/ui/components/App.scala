@@ -10,9 +10,10 @@ object App:
       Navigation.render,
       div(
         cls := "main-content",
-        Navigation.$currentPage.map:
+        child <-- Navigation.$currentPage.map:
           case "departments" => DepartmentsPage.render
           case "employees" => EmployeesPage.render
           case "phones" => PhonesPage.render
+          case other => div(s"Unknown page: $other")
       )
     )

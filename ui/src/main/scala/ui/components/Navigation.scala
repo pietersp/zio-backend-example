@@ -10,8 +10,8 @@ object Navigation:
     nav(
       cls := "nav-sidebar",
       ul(
-        li(a("Departments", href := "#", onClick --> { _ => $currentPage.set("departments") })),
-        li(a("Employees", href := "#", onClick --> { _ => $currentPage.set("employees") })),
-        li(a("Phones", href := "#", onClick --> { _ => $currentPage.set("phones") }))
+        li(a("Departments", onClick.preventDefault --> { _ => $currentPage.set("departments") })),
+        li(a("Employees", onClick.preventDefault --> { _ => $currentPage.set("employees") })),
+        li(a("Phones", onClick.preventDefault --> { _ => $currentPage.set("phones") }))
       )
     )
