@@ -20,7 +20,7 @@ lazy val root = (project in file("."))
     name := projectName,
     addCommandAlias("run", "app/run")
   )
-  .aggregate(app, client, core, domain, endpoints)
+  .aggregate(app, client, core, domain, endpoints, ui)
 
 lazy val app = (project in file("app"))
   .settings(
@@ -102,3 +102,18 @@ lazy val endpoints = (project in file("endpoints"))
     ) ++ testDependencies
   )
   .dependsOn(domain)
+
+lazy val ui = (project in file("ui"))
+  .settings(
+    name := s"$projectName-ui",
+    scalaVersion := "3.6.4",
+    scalacOptions ++= Seq(
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      "org.scala-js" %% "scalajs-dom" % "1.2.0",
+      "com.raquo" %% "laminar" % "20.0.0-2"
+    ),
+    scalaJSUseMainModuleInitializer := true
+  )
+  .enablePlugins(ScalaJSPlugin)
