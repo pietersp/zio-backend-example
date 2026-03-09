@@ -8,60 +8,105 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object DepartmentsPage:
   val $departments = Var(List.empty[Department])
   val $searchQuery = Var("")
-  val $editingDept = Var[Option[Department]](None)
   val $showModal = Var(false)
   val $formName = Var("")
+  val $error = Var(Option.empty[String])
+  val $loading = Var(true)
 
-  // Load departments on mount
-  val _ = Api.getDepartments.foreach { depts => $departments.set(depts) }
+  val _ = Api.getDepartments.onComplete {
+    case scala.util.Success(depts) => 
+      $departments.set(depts)
+      $loading.set(false)
+    case scala.util.Failure(ex) => 
+      $error.set(Some(ex.getMessage))
+      $loading.set(false)
+  }
+
+  def refresh() = 
+    $loading.set(true)
+    Api.getDepartments.onComplete {
+      case scala.util.Success(depts) => 
+        $departments.set(depts)
+        $loading.set(false)
+      case scala.util.Failure(ex) => 
+        $error.set(Some(ex.getMessage))
+        $loading.set(false)
+    }
+
+  private def filteredDepartments: Signal[List[Department]] =
+    $departments.signal.combineWith($searchQuery.signal).map { (depts, query) =>
+      if query.isEmpty then depts
+      else depts.filter(_.name.toLowerCase.contains(query.toLowerCase))
+    }
+
+  private def errorMessage: Signal[String] = $error.signal.map(_.getOrElse(""))
 
   def render = 
     div(
-      h1("Departments"),
-      input(
-        typ := "search",
-        placeholder := "Search departments...",
-        onInput.map(_.target.value) --> $searchQuery
-      ),
-      button("Add Department", onClick --> { _ => $editingDept.set(None); $formName.set(""); $showModal.set(true) }),
-      table(
-        thead(tr(th("ID"), th("Name"), th("Actions"))),
-        tbody(
-          $departments.map(_.filter(d => $searchQuery.now.isEmpty || d.name.toLowerCase.contains($searchQuery.now.toLowerCase))).map: filtered =>
-            filtered.map: dept =>
-              tr(
-                td(dept.id.toString),
-                td(dept.name),
-                td(
-                  button("Edit", onClick --> { _ => $editingDept.set(Some(dept)); $formName.set(dept.name); $showModal.set(true) }),
-                  button("Delete", onClick --> { _ => Api.deleteDepartment(dept.id).foreach { _ => $departments.update(_.filter(_.id != dept.id)) } })
-                )
-              )
+      div(
+        cls := "page-header",
+        h1("Departments"),
+        div(
+          cls := "actions-bar",
+          input(
+            cls := "search-bar",
+            typ := "search",
+            placeholder := "Search departments...",
+            onInput.mapToValue --> $searchQuery
+          ),
+          button("Add Department", onClick --> { _ => $formName.set(""); $showModal.set(true) }),
+          span(child.text <-- errorMessage, cls := "state-message state-error", display <-- $error.signal.map(e => if e.isDefined then "flex" else "none")),
+          span(child.text <-- $loading.signal.map(loading => if loading then "Loading..." else ""), cls := "state-message state-loading", display <-- $loading.signal.map(l => if l then "flex" else "none"))
         )
       ),
-      children <-- $showModal.map: show =>
+      div(
+        cls := "table-container",
+        table(
+          thead(tr(th("Name"), th("Actions"))),
+          tbody(
+            children <-- filteredDepartments.map: depts =>
+              depts.map: dept =>
+                tr(
+                  td(dept.name),
+                  td(
+                    cls := "td-actions",
+                    button(cls := "icon-btn outline", "Edit", onClick --> { _ => $formName.set(dept.name); $showModal.set(true) }),
+                    button(cls := "icon-btn danger", "Delete", onClick --> { _ => 
+                      Api.deleteDepartment(dept.id).onComplete {
+                        case scala.util.Success(_) => refresh()
+                        case scala.util.Failure(ex) => $error.set(Some(ex.getMessage))
+                      }
+                    })
+                  )
+                )
+          )
+        )
+      ),
+      children <-- $showModal.signal.map: show =>
         if show then Seq(Modal.render(
-          title = if $editingDept.now.isDefined then "Edit Department" else "Add Department",
-          onClose = () => { $showModal.set(false); $formName.set("") },
+          title = "Add Department",
+          onClose = () => { $showModal.set(false); $formName.set(""); () },
           content = 
             div(
-              input(
-                typ := "text",
-                placeholder := "Department Name",
-                value <-- $formName,
-                onInput.map(_.target.value) --> $formName
+              div(
+                cls := "form-group",
+                input(
+                  typ := "text",
+                  placeholder := "Department Name",
+                  value <-- $formName,
+                  onInput.mapToValue --> $formName
+                )
               ),
               button("Save", onClick --> { _ => 
-                val name = $formName.now
-                val future = $editingDept.now match
-                  case Some(dept) => Api.updateDepartment(dept.id, name)
-                  case None => Api.createDepartment(name)
-                future.foreach: newDept =>
-                  $departments.update: deps =>
-                    $editingDept.now match
-                      case Some(_) => deps.map(d => if d.id == newDept.id then newDept else d)
-                      case None => deps :+ newDept
-                  $showModal.set(false)
+                val name = $formName.now()
+                Api.createDepartment(name).onComplete {
+                  case scala.util.Success(_) =>
+                    $showModal.set(false)
+                    $formName.set("")
+                    refresh()
+                  case scala.util.Failure(ex) =>
+                    $error.set(Some(ex.getMessage))
+                }
               })
             )
         )) else Seq.empty

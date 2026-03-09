@@ -1,17 +1,25 @@
 package ui.components
 
 import com.raquo.laminar.api.L.*
-import ui.pages.*
 
 object Navigation:
   val $currentPage = Var("departments")
 
   def render = 
-    nav(
+    div(
       cls := "nav-sidebar",
       ul(
-        li(a("Departments", onClick.preventDefault --> { _ => $currentPage.set("departments") })),
-        li(a("Employees", onClick.preventDefault --> { _ => $currentPage.set("employees") })),
-        li(a("Phones", onClick.preventDefault --> { _ => $currentPage.set("phones") }))
+        li(a("Departments", 
+          cls <-- $currentPage.signal.map(p => if p == "departments" then "active" else ""),
+          onClick.preventDefault --> { _ => $currentPage.set("departments") }
+        )),
+        li(a("Employees", 
+          cls <-- $currentPage.signal.map(p => if p == "employees" then "active" else ""),
+          onClick.preventDefault --> { _ => $currentPage.set("employees") }
+        )),
+        li(a("Phones", 
+          cls <-- $currentPage.signal.map(p => if p == "phones" then "active" else ""),
+          onClick.preventDefault --> { _ => $currentPage.set("phones") }
+        ))
       )
     )

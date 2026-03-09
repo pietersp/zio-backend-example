@@ -6,11 +6,11 @@ import ui.pages.*
 object App:
   val component = 
     div(
-      cls := "container-fluid",
+      cls := "layout",
       Navigation.render,
       div(
         cls := "main-content",
-        child <-- Navigation.$currentPage.map:
+        child <-- Navigation.$currentPage.signal.map:
           case "departments" => DepartmentsPage.render
           case "employees" => EmployeesPage.render
           case "phones" => PhonesPage.render

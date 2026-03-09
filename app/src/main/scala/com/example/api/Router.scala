@@ -16,6 +16,9 @@ import com.example.service.{
 import zio.http.endpoint.openapi.{OpenAPIGen, SwaggerUI}
 import zio.http.{Routes, *}
 import zio.http.Method.*
+import zio.http.Middleware.serveDirectory
+import zio.http.codec.PathCodec.trailing
+import java.io.File
 
 trait Router
     extends DepartmentHandlers
@@ -110,12 +113,6 @@ trait Router
       )
     )
 
-  private val staticRoutes = Routes(
-    GET / "ui" -> Http.fromFile("ui/target/web/index.html"),
-    GET / "ui" / "index.html" -> Http.fromFile("ui/target/web/index.html"),
-    GET / "ui" / "main.js" -> Http.fromFile("ui/target/web/main.js")
-  )
-
-  val allRoutes = routes ++ swaggerRoutes ++ staticRoutes
+  val allRoutes = (routes ++ swaggerRoutes) @@ serveDirectory(Path("ui"), new File("app/src/main/resources/ui"))
 
 }

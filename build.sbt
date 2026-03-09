@@ -30,7 +30,7 @@ lazy val app = (project in file("app"))
     ),
     libraryDependencies ++= Seq(
       // ZIO HTTP
-      "dev.zio" %% "zio-http" % "3.3.3",
+      "dev.zio" %% "zio-http" % "3.8.1",
       // Database
       "com.augustnagro" %% "magnumzio" % "2.0.0-M1",
       "org.postgresql" % "postgresql" % "42.7.6",
@@ -109,9 +109,10 @@ lazy val ui = (project in file("ui"))
     scalacOptions ++= Seq(
       "-Wunused:imports"
     ),
+    scalaJSUseMainModuleInitializer := true,
     libraryDependencies ++= Seq(
-      "org.scala-js" %% "scalajs-dom" % "1.2.0",
-      "com.raquo" %% "laminar" % "20.0.0-2"
+      "org.scala-js" %%% "scalajs-dom" % "2.8.0",
+      "com.raquo" %%% "laminar" % "17.0.0"
     )
   )
   .enablePlugins(ScalaJSPlugin)
