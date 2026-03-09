@@ -15,7 +15,6 @@ lazy val root = (project in file("."))
   .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     npmDependencies ++= Seq(
-      "laminar" -> "20.0.0-2",
-      "vite" -> "^6.0.0"
+      "laminar" -> "20.0.0-2"
     )
   )
