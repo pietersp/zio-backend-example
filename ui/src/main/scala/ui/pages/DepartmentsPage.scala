@@ -4,7 +4,6 @@ import com.raquo.laminar.api.L.*
 import ui.api.{Api, Department}
 import ui.components.Modal
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.scalajs.js.Dynamic.{literal => jsObj}
 
 object DepartmentsPage:
   val $departments = Var(List.empty[Department])
@@ -43,7 +42,7 @@ object DepartmentsPage:
       children <-- $showModal.map: show =>
         if show then Seq(Modal.render(
           title = if $editingDept.now.isDefined then "Edit Department" else "Add Department",
-          onClose = () => $showModal.set(false),
+          onClose = () => { $showModal.set(false); $formName.set("") },
           content = 
             div(
               input(

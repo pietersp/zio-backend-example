@@ -32,7 +32,7 @@ object EmployeesPage:
       table(
         thead(tr(th("ID"), th("Name"), th("Age"), th("Department"), th("Actions"))),
         tbody(
-          $employees.map(_.filter(e => $searchQuery.now.isEmpty || e.name.toLowerCase.contains($searchQuery.now.toLowerCase()))).map: filtered =>
+          $employees.map(_.filter(e => $searchQuery.now.isEmpty || e.name.toLowerCase.contains($searchQuery.now.toLowerCase))).map: filtered =>
             filtered.map: emp =>
               tr(
                 td(emp.id.toString),
@@ -51,7 +51,7 @@ object EmployeesPage:
       children <-- $showModal.map: show =>
         if show then Seq(Modal.render(
           title = if $editingEmp.now.isDefined then "Edit Employee" else "Add Employee",
-          onClose = () => $showModal.set(false),
+          onClose = () => { $showModal.set(false); $formName.set(""); $formAge.set(0); $formDeptId.set(0L) },
           content = 
             div(
               input(
@@ -68,7 +68,7 @@ object EmployeesPage:
               ),
               select(
                 option("Select Department", disabled := true, selected := true),
-                $departments.now.map(dept => option(value := dept.id.toString, dept.name)),
+                children <-- $departments.map(depts => depts.map(dept => option(value := dept.id.toString, dept.name))),
                 onChange.map(_.target.value.toLongOption.getOrElse(0L)) --> $formDeptId
               ),
               button("Save", onClick --> { _ => 

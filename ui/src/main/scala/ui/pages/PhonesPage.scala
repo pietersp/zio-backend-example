@@ -49,7 +49,7 @@ object PhonesPage:
       children <-- $showModal.map: show =>
         if show then Seq(Modal.render(
           title = if $editingPhone.now.isDefined then "Edit Phone" else "Add Phone",
-          onClose = () => $showModal.set(false),
+          onClose = () => { $showModal.set(false); $formNumber.set(""); $formEmpId.set(None) },
           content = 
             div(
               input(
@@ -60,7 +60,7 @@ object PhonesPage:
               ),
               select(
                 option("Unassigned", value := ""),
-                $employees.now.map(emp => option(value := emp.id.toString, emp.name)),
+                children <-- $employees.map(emps => emps.map(emp => option(value := emp.id.toString, emp.name))),
                 onChange.map(s => if s.target.value.isEmpty then None else s.target.value.toLongOption) --> $formEmpId
               ),
               button("Save", onClick --> { _ => 
