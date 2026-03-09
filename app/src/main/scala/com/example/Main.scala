@@ -107,7 +107,7 @@ object Main extends ZIOAppDefault with Router {
       config <- ZIO.service[AppConfig]
       _ <- ZIO.logInfo("Starting ZIO Backend application...")
       _ <- ZIO.logInfo(s"Database config: ${config.database}")
-      _ <- Server.serve(routes ++ swaggerRoutes).withMiddleware(CORS.default)
+      _ <- Server.serve(allRoutes).withMiddleware(CORS.default)
     } yield ()
   }.provide(
     Server.default,

@@ -14,7 +14,8 @@ import com.example.service.{
   PhoneService
 }
 import zio.http.endpoint.openapi.{OpenAPIGen, SwaggerUI}
-import zio.http.{Routes, *}
+import zio.http.{FilePath, Routes, *}
+import zio.http.Method.*
 
 trait Router
     extends DepartmentHandlers
@@ -108,5 +109,12 @@ trait Router
         EmployeePhoneEndpoints.removePhoneFromEmployee
       )
     )
+
+  private val staticRoutes = Routes(
+    GET / "ui" / "index.html" -> Http.fromFile("ui/target/web/index.html"),
+    GET / "ui" / "main.js" -> Http.fromFile("ui/target/web/main.js")
+  )
+
+  val allRoutes = routes ++ swaggerRoutes ++ staticRoutes
 
 }
