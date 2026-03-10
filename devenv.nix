@@ -9,12 +9,11 @@
   # https://devenv.sh/packages/
   packages = [
     pkgs.git
-    pkgs.metals
     pkgs.scala-cli
-
   ];
 
   # https://devenv.sh/languages/
+   languages.java.jdk.package = pkgs.jdk25_headless;
    languages.scala = {
      enable = true;
      lsp.enable = true;
