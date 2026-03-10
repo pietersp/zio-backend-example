@@ -7,15 +7,19 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ 
-    pkgs.git 
+  packages = [
+    pkgs.git
     pkgs.metals
     pkgs.scala-cli
 
   ];
 
   # https://devenv.sh/languages/
-   languages.scala.enable = true;
+   languages.scala = {
+     enable = true;
+     lsp.enable = true;
+     sbt.enable = true;
+   };
 
   # https://devenv.sh/processes/
   # processes.dev.exec = "${lib.getExe pkgs.watchexec} -n -- ls -la";
